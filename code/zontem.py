@@ -84,18 +84,17 @@ def combine_records(records):
 
     # Number months in fixed lengh record
     M = 12 * (last_year - base_year + 1)
+    # Make sure all the records are the same length, namely *M*.
+    combined = [MISSING]*M
+
+    if len(records) == 0:
+        return combined
 
     def good_months(record):
         return record.good_count
 
     records = iter(sorted(records, key=good_months, reverse=True))
-    # Make sure all the records are the same length, namely *M*.
-    combined = [MISSING]*M
-    try:
-        first = records.next()
-    except:
-        # No records
-        return Series(series=combined)
+    first = records.next()
 
     combined[:len(first.series)] = first.series
     combined_weight = [valid(v) for v in combined]
