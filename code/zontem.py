@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# $URL: http://amberfrog.googlecode.com/svn/trunk/zontem/code/zontem.py $
-# $Rev: 157 $
 #
 # zontem.py
 #
