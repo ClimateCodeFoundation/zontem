@@ -31,17 +31,30 @@ last_year = 0
 
 # Meta data
 v2inv = os.path.join('input', 'v2.inv')
-v2meta = gio.station_metadata(v2inv, format='v2')
 
 def run(**key):
-    name = key.get('input', 'input/v2.mean')
-    input = gio.GHCNV2Reader(name, year_min=base_year, meta=v2meta)
+    import glob
+    name = key.get('input', 'v3')
+
+    if name == 'v3':
+        v3dat = glob.glob('input/ghcnm.v3.*/ghcnm*.dat')[0]
+        if v3dat:
+            v3meta_filename = glob.glob('input/ghcnm.v3.*/ghcnm*.inv')[0]
+            v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
+            input = gio.GHCNV3Reader(path=v3dat, meta=v3meta, year_min=base_year)
+    else:
+        v2meta = gio.station_metadata(v2inv, format='v2')
+        input = gio.GHCNV2Reader(name, year_min=base_year, meta=v2meta)
+
     N = int(key.get('zones', 20))
-    zones = split(input, N)
+    zontem(input, N)
+
+def zontem(input, n_zones):
+    zones = split(input, n_zones)
     zonal_average = map(combine_records, zones)
     global_average = combine_records(zonal_average)
     annual_series = annual_anomaly(global_average)
-    save(open('zontemGLB%d.txt' % N, 'w'), annual_series)
+    save(open('zontemGLB%d.txt' % n_zones, 'w'), annual_series)
 
 def split(records, N=20):
     """Split a series of records into equal area latitudinal zones."""
