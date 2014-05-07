@@ -1,0 +1,145 @@
+#!/usr/bin/env python
+# $URL: http://amberfrog.googlecode.com/svn/trunk/zontem/code/zontem.py $
+# $Rev: 157 $
+#
+# zontem.py
+#
+# David Jones, 2010-08-05
+#
+# Zonal Temperatures
+#
+# A simple computation of global average temperature anomaly via zonal
+# averages.
+
+# Hacky import extender.
+import pathex
+
+# Clear Climate Code
+from tool import gio
+from code.giss_data import valid, MISSING, Series
+from code import series
+
+import math
+import os
+import sys
+
+base_year = 1880
+combine_overlap = 20
+
+# Most recent year of any input record.
+last_year = 0
+
+# Meta data
+v2inv = os.path.join('input', 'v2.inv')
+v2meta = gio.station_metadata(v2inv, format='v2')
+
+def run(**key):
+    name = key.get('input', 'input/v2.mean')
+    input = gio.GHCNV2Reader(name, year_min=base_year, meta=v2meta)
+    N = int(key.get('zones', 20))
+    zones = split(input, N)
+    zonal_average = map(combine_records, zones)
+    global_average = combine_records(zonal_average)
+    annual_series = annual_anomaly(global_average)
+    save(open('zontemGLB%d.txt' % N, 'w'), annual_series)
+
+def split(records, N=20):
+    """Split a series of records into equal area latitudinal zones."""
+
+    global last_year
+
+    # one list for each zone
+    zone = [[] for _ in range(N)]
+
+    for record in records:
+        last_year = max(last_year, record.last_year)
+        lat = record.station.lat
+        # Calculate Z, distance from equatorial plane (normalised).
+        z = math.sin(lat*math.pi/180.0)
+        i = int(math.floor((z+1)/2*N))
+        # Fix Zone of hypothetical North Pole station.
+        i = min(i, N-1)
+        zone[i].append(record)
+        sys.stderr.write('\rZone %2d: %4d records' % (i, len(zone[i])))
+        sys.stderr.flush()
+    sys.stderr.write('\n')
+    return zone
+
+def combine_records(records):
+    """Takes a list of records, and combined them into one average
+    record."""
+
+    # Number months in fixed lengh record
+    M = 12 * (last_year - base_year + 1)
+
+    def good_months(record):
+        return record.good_count
+
+    records = iter(sorted(records, key=good_months, reverse=True))
+    # Make sure all the records are the same length, namely *M*.
+    combined = [MISSING]*M
+    try:
+        first = records.next()
+    except:
+        # No records
+        return Series(series=combined)
+
+    combined[:len(first.series)] = first.series
+    combined_weight = [valid(v) for v in combined]
+    for i,record in enumerate(records):
+        new = [MISSING]*len(combined)
+        new[:len(record.series)] = record.series
+        series.combine(combined, combined_weight,
+            new, 1.0,
+            combine_overlap)
+        sys.stderr.write('\r%d' % i)
+    sys.stderr.write('\n')
+    return Series(series=combined)
+
+def annual_anomaly(monthly):
+    """Take a monthly series and convert to annual anomaly.  All months
+    (Jan to Dec) are required to be present to compute an anomaly
+    value."""
+
+    # Convert to monthly anomalies...
+    means, anoms = series.monthly_anomalies(monthly.series)
+    # Then take 12 months at a time and annualise.
+    for year in zip(*anoms):
+        if min(year, key=valid):
+            # All months valid
+            yield sum(year)/12.0
+        else:
+            yield MISSING
+
+
+def save(out, series):
+    """Save an annual series.  Same format as GISTEMP GLB.txt format.
+    But only just enough so that vischeck.py can read it."""
+
+    def fmt(v):
+        s = "%4d" % (v*100)
+        if len(s) > 4:
+            return '****'
+        return s
+
+    for i,val in enumerate(map(fmt, series)):
+        year = base_year + i
+        out.write(
+          ("%04d " + 12*" ****" + "   %4s**** " + 4*" ****" + " %d\n") %
+          (year, val, year))
+
+
+def main(argv=None):
+    import getopt
+    import sys
+    if argv is None:
+        argv = sys.argv
+    opts,args = getopt.getopt(argv[1:], '',
+      ['input=', 'zones='])
+    key = {}
+    for opt,v in opts:
+        key[opt[2:]] = v
+    run(**key)
+
+if __name__ == '__main__':
+    main()
