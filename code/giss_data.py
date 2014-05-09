@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# $URL: http://ccc-gistemp.googlecode.com/svn/trunk/code/giss_data.py $
-# $Rev: 692 $
 
 """Classes for GISTEMP data.
 

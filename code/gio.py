@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# $URL: http://ccc-gistemp.googlecode.com/svn/trunk/tool/gio.py $
-# $Rev: 1020 $
 #
 # gio.py
 #

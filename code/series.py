@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# $URL: http://ccc-gistemp.googlecode.com/svn/trunk/code/series.py $
-# $Rev: 696 $
 #
 # series.py
 #
