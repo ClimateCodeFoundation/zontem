@@ -12,15 +12,9 @@ GISS GISTEMP.
 Some of these file formats are peculiar to GISS, others are defined and
 used by other bodies (such as NOAA's v2.mean format).
 """
-__docformat__ = "restructuredtext"
 
 
-import glob
 import itertools
-import math
-import os
-import re
-import struct
 import warnings
 
 
