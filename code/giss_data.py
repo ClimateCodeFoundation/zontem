@@ -56,17 +56,6 @@ class Station(object):
     def __repr__(self):
         return "Station(%r)" % self.__dict__
 
-def get_last_year():
-    """Get the latest year of the data.
-
-    We use today's date.  It's much simpler and more reliable than
-    anything else.
-    """
-
-    # http://docs.python.org/release/2.4.4/lib/module-time.html
-    import time
-    return time.localtime().tm_year
-
 def clear_cache(func):
     """A decorator, for `Series` methods that change the data.
 
@@ -455,64 +444,3 @@ class Series(object):
         self._series[idx] = value
     set_value = clear_cache(set_value)
 
-
-class SubboxMetaData(object):
-    """The metadata for a set of sub-box records.
-
-    :Ivar mo1:
-       TBD
-    :Ivar kq:
-       TBD
-    :Ivar mavg:
-       TBD
-    :Ivar monm:
-       TBD
-    :Ivar monm4:
-       TBD
-    :Ivar yrbeg:
-       TBD
-    :Ivar missing_flag:
-       TBD
-    :Ivar precipitation_flag:
-       TBD
-    :Ivar title:
-       TBD
-    """
-    def __init__(self, mo1, kq, mavg, monm, monm4, yrbeg,
-            missing_flag, precipitation_flag, title):
-        self.mo1 = mo1
-        self.kq = kq
-        self.mavg = mavg
-        self.monm = monm
-        self.monm4 = monm4
-        self.yrbeg = yrbeg
-        self.missing_flag = missing_flag
-        self.precipitation_flag = precipitation_flag
-        self.title = title
-
-    def __repr__(self):
-        return 'SubboxMetadata(%r)' % self.__dict__
-
-def boxuid(box, celltype='QXQ'):
-    """Synthesize a uid attribute based on the box's centre.  *box* is a
-    4-tuple of the boxes bounds: (south, north, west, east).
-
-    There are 2 sorts of 12 character string returned:
-    +NN.N+EEE.EQ
-    QXQ@+NN-EEET
-    The first is used when the width of the box is less than 10
-    degrees; the second otherwise.  This is the distinction of cells
-    versus boxes.
-
-    *celltype* is used to determine either the last character (1st form,
-    above) or the first 3 characters (2nd form, above).  In the 1st
-    form, the first character of celltype determines the last character.
-    """
-
-    import eqarea
-    lat,lon = eqarea.centre(box)
-    _,_,w,e = box
-    if e - w < 10:
-        return "%+05.1f%+06.1f%s" % (lat, lon, celltype[0])
-    else:
-        return "%s@%+03.0f%+04.0fT" % (celltype[:3], lat, lon)
