@@ -9,13 +9,10 @@
 # A simple computation of global average temperature anomaly via zonal
 # averages.
 
-# Hacky import extender.
-import pathex
-
 # Clear Climate Code
-from tool import gio
-from code.giss_data import valid, MISSING, Series
-from code import series
+import gio
+from giss_data import valid, MISSING, Series
+import series
 
 import math
 import os
@@ -45,14 +42,15 @@ def run(**key):
         input = gio.GHCNV2Reader(name, year_min=base_year, meta=v2meta)
 
     N = int(key.get('zones', 20))
-    zontem(input, N)
+    global_annual_series = zontem(input, N)
+    save(open('zontemGLB%d.txt' % N, 'w'), global_annual_series)
 
 def zontem(input, n_zones):
     zones = split(input, n_zones)
     zonal_average = map(combine_records, zones)
     global_average = combine_records(zonal_average)
     annual_series = annual_anomaly(global_average)
-    save(open('zontemGLB%d.txt' % n_zones, 'w'), annual_series)
+    return annual_series
 
 def split(records, N=20):
     """Split a series of records into equal area latitudinal zones."""
