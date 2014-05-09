@@ -16,6 +16,7 @@ import series
 
 import math
 import os
+import re
 import sys
 
 base_year = 1880
@@ -38,8 +39,9 @@ def run(**key):
             v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
             input = gio.GHCNV3Reader(path=v3dat, meta=v3meta, year_min=base_year)
     else:
-        v2meta = gio.station_metadata(v2inv, format='v2')
-        input = gio.GHCNV2Reader(name, year_min=base_year, meta=v2meta)
+        v3meta_filename = re.sub(r'[.]dat$', '.inv', name)
+        v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
+        input = gio.GHCNV3Reader(name, year_min=base_year, meta=v3meta)
 
     N = int(key.get('zones', 20))
     global_annual_series = zontem(input, N)
