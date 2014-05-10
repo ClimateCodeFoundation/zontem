@@ -206,14 +206,8 @@ class Series(object):
         self.__dict__.update(k)
 
     def __repr__(self):
-        # A bit ugly, because it tries to do something sensible for both
-        # station records and subbox series.
-        if hasattr(self, 'box'):
-            return ('Series(box=(%+06.2f,%+06.2f,%+07.2f,%+07.2f))' %
-              tuple(self.box))
-        else:
-            # Assume it is a station record with a uid.
-            return "Series(uid=%r)" % self.uid
+        # Assume it is a station record with a uid.
+        return "Series(uid=%r)" % self.uid
 
     @property
     def series(self):
@@ -258,16 +252,6 @@ class Series(object):
         return (self.last_month - 1) // 12
 
     @property
-    def rel_first_month(self):
-        """The `first_month` relative to `BASE_YEAR`."""
-        return self.first_month - BASE_YEAR * 12
-
-    @property
-    def rel_last_month(self):
-        """The `last_month` relative to `BASE_YEAR`."""
-        return self.last_month - BASE_YEAR * 12
-
-    @property
     def good_count(self):
         """The number of good values in the data."""
         if self._good_count is None:
@@ -276,21 +260,6 @@ class Series(object):
                 bad_count += invalid(v)
             self._good_count = len(self._series) - bad_count
         return self._good_count
-
-    def asdict(self):
-        """Return the series as a dict that maps from integer keys
-        to floating point values.  The key is an integer of the Y*100+M
-        where Y is the year and M is the month (from 1 to 12), thus the
-        integer key when printed as a decimal has the ISO 8601 form:
-        YYYYMM.
-        
-        The result may or may not be shared with internals of this
-        object."""
-
-        first_index = self.first_year * 100 + 1
-        return dict((first_index + (i//12*100 + i%12), v)
-          for i,v in enumerate(self._series)
-          if v != MISSING)
 
     def first_valid_year(self):
         """The first calendar year with any valid data."""
