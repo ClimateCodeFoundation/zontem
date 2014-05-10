@@ -203,10 +203,6 @@ class Series(object):
             if first_year:
                 self._first_month = first_year*12 + 1
             del k['first_year']
-        if 'series' in k:
-            series = k['series']
-            del k['series']
-            self.set_series(BASE_YEAR*12+1, series)
         self.__dict__.update(k)
 
     def __repr__(self):
@@ -368,50 +364,12 @@ class Series(object):
         return [self._get_a_month(m)
                 for m in range(start_month, start_month + 12)]
 
-    def get_set_of_years(self, first_year, last_year):
-        """Get a set of year records.
-
-        :Return:
-            A list of lists, where each sub-list contains 12 temperature values
-            for a given year. This works for any range of years, missing years
-            are filled with the MISSING value.
-
-        """
-        return [self.get_a_year(y) for y in range(first_year, last_year + 1)]
-
-    def set_ann_anoms(self, ann_anoms):
-        self.ann_anoms[:] = ann_anoms
-
-    def ann_anoms_good_count(self):
-        """Number of good values in the annual anomalies"""
-        bad = 0
-        for v in self.ann_anoms:
-            bad += invalid(v)
-        good_count = len(self.ann_anoms) - bad
-        return good_count
-
-    def pad_with_missing(self, n):
-        while len(self) < n:
-            self._series.append(MISSING)
-    pad_with_missing = clear_cache(pad_with_missing)
-
-    def trim(self):
-        self.station_months = len(self._series) - self._series.count(
-                MISSING)
-
     @property
     def station_uid(self):
         """The unique ID of the corresponding station."""
         return self.uid[:11]
 
     # Mutators below here
-
-    def set_series(self, first_month, series):
-        """*first_month* specifies the first month of the series where
-        January of (a hypothetical) 0 AD is 1."""
-
-        self._first_month = first_month
-        self._series = list(series)
 
     def add_year(self, year, data):
         """Add a year's worth of data.  *data* should be a sequence of
@@ -436,11 +394,3 @@ class Series(object):
         assert year == self.last_year + 1
          
         self._series.extend(data)
-    add_year = clear_cache(add_year)
-
-    def set_value(self, idx, value):
-        while idx >= len(self.series):
-            self._series.append(MISSING)
-        self._series[idx] = value
-    set_value = clear_cache(set_value)
-
