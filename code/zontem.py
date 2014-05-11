@@ -133,6 +133,8 @@ def csv_save(out, series):
 
     csvfile = csv.writer(out)
     for i, val in enumerate(series):
+        if not valid(val):
+            val=''
         csvfile.writerow([base_year + i, val])
 
 def save(out, series):
