@@ -207,7 +207,8 @@ class Series(object):
 
     def __repr__(self):
         # Assume it is a station record with a uid.
-        return "Series(uid=%r)" % self.uid
+        return "Series(uid=%r)" % getattr(self, 'uid',
+          "<%s>" % id(self))
 
     @property
     def series(self):
