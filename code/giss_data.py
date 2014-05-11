@@ -203,6 +203,11 @@ class Series(object):
             if first_year:
                 self._first_month = first_year*12 + 1
             del k['first_year']
+        if 'series' in k:
+            series = k['series']
+            del k['series']
+            self.set_series(BASE_YEAR*12+1, series)
+
         self.__dict__.update(k)
 
     def __repr__(self):
@@ -364,3 +369,11 @@ class Series(object):
         assert year == self.last_year + 1
          
         self._series.extend(data)
+
+    def set_series(self, first_month, series):
+        """*first_month* specifies the first month of the series where
+        January of (a hypothetical) 0 AD is 1."""
+
+        self._first_month = first_month
+        self._series = list(series)
+
