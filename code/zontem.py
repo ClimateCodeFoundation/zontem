@@ -117,7 +117,7 @@ def annual_anomaly(monthly):
     result = []
     # Then take 12 months at a time and annualise.
     for year in zip(*anoms):
-        if min(year, key=valid):
+        if all(valid(month) for month in year):
             # All months valid
             result.append(sum(year)/12.0)
         else:
