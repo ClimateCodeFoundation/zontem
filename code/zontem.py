@@ -114,13 +114,15 @@ def annual_anomaly(monthly):
 
     # Convert to monthly anomalies...
     means, anoms = series.monthly_anomalies(monthly.series)
+    result = []
     # Then take 12 months at a time and annualise.
     for year in zip(*anoms):
         if min(year, key=valid):
             # All months valid
-            yield sum(year)/12.0
+            result.append(sum(year)/12.0)
         else:
-            yield MISSING
+            result.append(MISSING)
+    return result
 
 def csv_save(out, series):
     """
@@ -131,7 +133,7 @@ def csv_save(out, series):
 
     csvfile = csv.writer(out)
     for i, val in enumerate(series):
-        csv.writerow(base_year + 1, val)
+        csvfile.writerow([base_year + i, val])
 
 def save(out, series):
     """Save an annual series.  Same format as GISTEMP GLB.txt format.
