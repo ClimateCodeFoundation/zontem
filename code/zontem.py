@@ -46,6 +46,7 @@ def run(**key):
     N = int(key.get('zones', 20))
     global_annual_series = zontem(input, N)
     save(open('zontemGLB%d.txt' % N, 'w'), global_annual_series)
+    csv_save(open('Zontem.csv', 'w'), global_annual_series)
 
 def zontem(input, n_zones):
     zones = split(input, n_zones)
@@ -121,6 +122,16 @@ def annual_anomaly(monthly):
         else:
             yield MISSING
 
+def csv_save(out, series):
+    """
+    Save an annual series, as a CSV file.
+    """
+
+    import csv
+
+    csvfile = csv.writer(out)
+    for i, val in enumerate(series):
+        csv.writerow(base_year + 1, val)
 
 def save(out, series):
     """Save an annual series.  Same format as GISTEMP GLB.txt format.
