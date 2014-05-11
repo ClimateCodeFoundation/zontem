@@ -55,3 +55,8 @@ the GHCN-M V3 dataset has been quality controlled). Each of the
 competing products have different methods for weighting a
 station when computing grid cells. ZONTEM dispenses with such
 complications and weights all stations in a zone equally.
+
+GISTEMP, and NOAA have an optional procedure where Sea Surface
+Temperatures (SST) are used over the ocean. CRUTEM4 has a sister
+product, HadCRUT, that also incorporates SSTs. ZONTEM does not
+incorporate SSTs.
