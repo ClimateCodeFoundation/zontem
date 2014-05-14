@@ -35,9 +35,6 @@ def valid(v):
     return not invalid(v)
 
 
-_v2_sources = None
-
-
 class Station(object):
     """A station's metadata.
 
