@@ -189,9 +189,7 @@ class Series(object):
 
     def good_count(self):
         """The number of good values in the data."""
-        bad_count = 0
-        for v in self._series:
-            bad_count += invalid(v)
+        bad_count = self._series.count(MISSING)
         return len(self._series) - bad_count
 
     # Year's worth of missing data
