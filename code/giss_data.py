@@ -52,20 +52,6 @@ class Station(object):
     def __repr__(self):
         return "Station(%r)" % self.__dict__
 
-def clear_cache(func):
-    """A decorator, for `Series` methods that change the data.
-
-    Any method that changes the underlying data series in a `Series`
-    instance must clear the cached values used for some properties.
-    This decorator takes care of this chore.
-
-    """
-    def f(self, *args, **kwargs):
-        self._good_count = None
-        return func(self, *args, **kwargs)
-
-    return f
-
 
 class StationMetaData(object):
     """The metadata for a set of station records.
@@ -191,7 +177,6 @@ class Series(object):
     def __init__(self, **k):
         self._first_month = None
         self._series = []
-        self._good_count = None
         self.ann_anoms = []
         series = None
         if 'first_year' in k:
@@ -253,15 +238,12 @@ class Series(object):
         """The year of the last value in the series."""
         return (self.last_month - 1) // 12
 
-    @property
     def good_count(self):
         """The number of good values in the data."""
-        if self._good_count is None:
-            bad_count = 0
-            for v in self._series:
-                bad_count += invalid(v)
-            self._good_count = len(self._series) - bad_count
-        return self._good_count
+        bad_count = 0
+        for v in self._series:
+            bad_count += invalid(v)
+        return len(self._series) - bad_count
 
     # Year's worth of missing data
     missing_year = [MISSING]*12

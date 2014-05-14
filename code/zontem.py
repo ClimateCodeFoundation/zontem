@@ -90,7 +90,7 @@ def combine_records(records):
         return combined
 
     def good_months(record):
-        return record.good_count
+        return record.good_count()
 
     records = iter(sorted(records, key=good_months, reverse=True))
     first = records.next()
