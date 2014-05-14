@@ -265,52 +265,6 @@ class Series(object):
             self._good_count = len(self._series) - bad_count
         return self._good_count
 
-    def first_valid_year(self):
-        """The first calendar year with any valid data."""
-        return (self.first_valid_month() - 1) // 12
-
-    def last_valid_year(self):
-        """The last calendar year with any valid data."""
-        return (self.last_valid_month() - 1) // 12
-
-    def first_valid_month(self):
-        """The first month with any valid data.  Returned as a 1-based
-        index (where January of year 0 is 1).
-        """
-        index = (i for i,x in enumerate(self.series) if x != MISSING)
-        try:
-            first = index.next()
-        except StopIteration:
-            # No valid data.  Return a large number.
-            return 9999*12
-        return first + self.first_month
-
-    def last_valid_month(self):
-        """The last month with any valid data.  Returned as a 1-based
-        index (where January of year 0 is 1).
-        """
-        index = (i for i,x in reversed(list(enumerate(self.series)))
-          if x != MISSING)
-        try:
-            last = index.next()
-        except StopIteration:
-            # No valid data.  Return a small number.
-            return 1
-        return last + self.first_month
-
-    def get_monthly_valid_counts(self):
-        """Get number of good values for each month.
-
-        :Return:
-            A list of 12 entries. Entry zero is the number of good entries
-            for January, entry 1 for February, etc.
-
-        """
-        monthly_valid = [0] * 12
-        for i, v in enumerate(self._series):
-            monthly_valid[(self.first_month + i - 1) % 12] += valid(v)
-        return monthly_valid
-
     # Year's worth of missing data
     missing_year = [MISSING]*12
 
