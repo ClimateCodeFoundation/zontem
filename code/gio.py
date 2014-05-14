@@ -29,7 +29,7 @@ import giss_data
 MISSING = 9999
 
 
-def GHCNV3Reader(path=None, file=None, meta=None, year_min=None, scale=None):
+def GHCNV3Reader(path=None, file=None, meta={}, year_min=None, scale=None):
     """Reads a file in GHCN V3 .dat format and yields each station
     record (as a giss_data.Series instance).  For now, this treats
     all the data for a station as a single record (contrast with GHCN V2
@@ -98,7 +98,7 @@ def GHCNV3Reader(path=None, file=None, meta=None, year_min=None, scale=None):
         key = dict(uid=id+'0',
                    first_year=year_min,
                    )
-        if meta and meta.get(id):
+        if meta.get(id):
             key['station'] = meta[id]
         record = giss_data.Series(**key)
         for line in lines:
