@@ -16,8 +16,7 @@ subbox series
     combining several station records together.
 
 Both types of record can be grouped in collections, often (in the original
-GISTEMP code) in files. Collections of records have associated metadata,
-the `StationMetaData` and `SubboxMetaData` classes.
+GISTEMP code) in files.
 
 """
 __docformat__ = "restructuredtext"
@@ -51,53 +50,6 @@ class Station(object):
 
     def __repr__(self):
         return "Station(%r)" % self.__dict__
-
-
-class StationMetaData(object):
-    """The metadata for a set of station records.
-
-    The keyword arguments for the constructor are entirely arbitrary.
-    The constructor accepts any keyword arguments and merely acts as a
-    repository.  By convention the keyword arguments are:
-
-    :Ivar mo1:
-        The number of months covered in the entire data set.
-    :Ivar kq:
-        The KQ quantity from the header record.
-    :Ivar mavg:
-        A code indicating the length of time each average value represents. The
-        only supported by the CCC code is '6', which indicates that each entry
-        is a monthly average. The effect of this having a different value is
-        undefined.
-    :Ivar monm:
-        Maximum length of any time record.
-    :Ivar monm4:
-        This is the size of this record when written to a GISS Fortran
-        unformatted file.
-
-        TODO: This can probably be ditched and calculated as required
-        in I/O code.
-    :Ivar yrbeg:
-        The year of first data.
-    :Ivar missing_flag:
-        The value used to indicate a missing value in the `series`. This is
-        often referred to in other code as variously bad, BAD, XBAD.
-
-        This should become unimportant over time in the CCC code, which should
-        stick to always using the `MISSING` value.
-    :Ivar precipitation_flag:
-        Probably defines a special value that serves a similar purppose to
-        the `missing_flag`. This does not seem to be used by any CCC code.
-    :Ivar mlast:
-        TODO
-    :Ivar title:
-        A title for this set of station records.
-    """
-    def __init__(self, **k):
-        self.__dict__ = k
-
-    def __repr__(self):
-        return 'StationMetadata(%r)' % self.__dict__
 
 
 # TODO: Needs some review. Among things to think about:
