@@ -156,7 +156,7 @@ def save(out, series):
 
 def main(argv=None):
     import getopt
-    import sys
+
     if argv is None:
         argv = sys.argv
     opts,args = getopt.getopt(argv[1:], '',

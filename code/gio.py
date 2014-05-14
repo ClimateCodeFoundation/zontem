@@ -15,7 +15,6 @@ used by other bodies (such as NOAA's v2.mean format).
 
 
 import itertools
-import warnings
 
 
 # Clear Climate Code

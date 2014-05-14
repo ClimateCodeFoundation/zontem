@@ -23,8 +23,6 @@ the `StationMetaData` and `SubboxMetaData` classes.
 __docformat__ = "restructuredtext"
 
 import sys
-# http://docs.python.org/release/2.4.4/lib/warning-functions.html
-import warnings
 
 #: The base year for time series data. Data before this time is not
 #: used in calculations.
