@@ -1,25 +1,13 @@
 #!/usr/bin/env python
 
-"""Classes for GISTEMP data.
-
-Primarily, the classes herein support monthly temperature series.
-Typically these are either for stations (station records) or subboxes
-(subbox series).  In either case the same class is used, `Series`,
-differing in what keyword arguments are supplied.
-
-station records
-    Stores a set of monthly averages associated with a particular monitoring
-    `Station`.
-
-subbox series
-    Stores monthly averages for a subbox, typically synthesized by
-    combining several station records together.
-
-Both types of record can be grouped in collections, often (in the original
-GISTEMP code) in files.
-
 """
-__docformat__ = "restructuredtext"
+Classes to support monthly temperature series.
+
+Typically these are series of data from a station
+(associated Station instance), but may also be synthesized
+series (for example, when a zone's station's time series are
+combined).
+"""
 
 #: The base year for time series data. Data before this time is not
 #: used in calculations.
@@ -38,10 +26,12 @@ def valid(v):
 class Station(object):
     """A station's metadata.
 
-    This holds the information about a single (weather monitoring) station. Not
-    all the attributes are used by the CCC code.  For a list of
-    attributes and documentation, see the io.station_metadata() function.
+    This holds the information about a single station.
+
+    The attributes stored depend entirely on the IO code that
+    creates the instance. For GHCN-M V3 see the ghcn.py file.
     """
+
     def __init__(self, **values):
         self.__dict__.update(values)
 
@@ -49,56 +39,38 @@ class Station(object):
         return "Station(%r)" % self.__dict__
 
 
-# TODO: Needs some review. Among things to think about:
-#
-# 1. Might it be seen as too complicated? It is complicated for a reason; to
-#    make the code that manipulates temperature series more readable.
-# 2. Should we use properties or convert the properties to methods?
-# 3. Some of the names are open to improvement.
 class Series(object):
-    """Monthly temperature Series.
+    """Monthly Series.
 
-    An instance contains a series of monthly data (in ccc-gistemp
-    the data are average monthly temperature values in degrees
-    Celsius), accessible via the `series` property.  This property
+    (conventionally the data are average monthly temperature values
+    in degrees Celsius)
+
+    An instance contains a series of monthly data accessible via the
+    `series` property.  This property
     should **always** be treated as read-only; the effect of modifying
     elements is undefined.
 
-    The series coveres the months from `first_month` to `last_month` month
-    inclusive. Months are counted from a non-existant year zero. So January,
-    1 AD has a month number of 13, February is 14, etc.
+    The series coveres the months from `first_month` to `last_month`
+    month inclusive. Months are counted from a non-existant year zero:
+    So 0001-01 (January, 1 AD) has a month number of 13, 0001-02
+    (February) is 14, and so on.
 
-    The GISTEMP/CCC code only uses data that starts from `BASE_YEAR` (1880).
-    Some code works on data series that start from this base year. So it is
-    convenient to be able to work in terms of years and months relative to this
-    base year. There are a number of properties with names that start with
-    `rel_` that provide values using this alternative reference.
+    Conventionally, the `station` property refers to the Station
+    instance for this series.
 
-    Note that most of the series metadata is provided by properties, which
-    are effectively read-only. All the instance variables should also be
-    treated as read-only and you should only set values in the data series
-    using the provided methods.
+    All the instance variables should be treated as read-only and you
+    should only set values in the data series using the provided
+    methods.
 
-    There are no subclasses of this class.  Some instances represent
-    station records, other instances represent subbox series.
-
-    For station records there can be multiple series for a single `Station`.
-    The `station` property provides the associated `Station` instance.
-    For a given station the different series are called "duplicates" in
-    GHCN terminology; they have a 12-digit uid that is made up of an
-    11-digit station identifier and a single extra digit to distinguish
-    each of the station's series.
+    This class is not designed for subclassing. Please do not do it.
 
     Generally a station record will have its uid supplied as a keyword
-    argument to the constructor (accessing the `station` property relies
-    on this):
+    argument to the constructor.
 
     :Ivar uid:
-        An integer that acts as a unique ID for the time series. This
-        is generally a 12-digit identifier taken from the GHCN file; the
-        first 11 digits comprise an identifier for the station.
-	The last digit distinguishes this series from other series
-	from the same station.
+        The unique ID for the time series. For GHCN-M v3 series
+        this is the 11-digit identifier taken from the GHCN file
+        (with a "0" appended).
 
     A first year can be supplied to the constructor which will base the
     series at that year:
@@ -108,21 +80,8 @@ class Series(object):
         subsequently added using add_year will be ignored if they
         precede first_year (a typical use is to set first_year to 1880
         for all records, ensuring that they all start at the same year).
-
-    When used to hold a series for a subbox, for example a record of data
-    as stored in the ``input/SBBX.HadR2`` file, then the following
-    keyword arguments are traditionally supplied to the constructor:
-
-    :Ivar lat_S, lat_N, lon_W, lon_E:
-        Coordinates describing the box's area.
-    :Ivar stations:
-        The number of stations that contributed to this sub-box.
-    :Ivar station_months:
-        The number of months that contributed to this sub-box.
-    :Ivar d:
-        Characteristic distance to station closest to centre.
-
     """
+
     def __init__(self, **k):
         self._first_month = None
         self._series = []
