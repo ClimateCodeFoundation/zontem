@@ -17,8 +17,8 @@ cd code
 ./zontem.py
 ```
 
-Methodology
-===========
+Method
+======
 
 The input is a number of records, each record being a
 time series of monthly (air) temperature averages from a single
