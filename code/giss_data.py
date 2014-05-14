@@ -22,8 +22,6 @@ the `StationMetaData` and `SubboxMetaData` classes.
 """
 __docformat__ = "restructuredtext"
 
-import sys
-
 #: The base year for time series data. Data before this time is not
 #: used in calculations.
 BASE_YEAR = 1880
@@ -191,7 +189,7 @@ class Series(object):
 
     """
     def __init__(self, **k):
-        self._first_month = sys.maxint
+        self._first_month = None
         self._series = []
         self._good_count = None
         self.ann_anoms = []
@@ -305,7 +303,7 @@ class Series(object):
         with MISSING).
         """
 
-        if self.first_month == sys.maxint:
+        if not self.first_month:
             self._first_month = year * 12 + 1
         else:
             # We have data already, so we may need to pad with missing months
