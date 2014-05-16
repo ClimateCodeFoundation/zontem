@@ -34,14 +34,11 @@ def run(**key):
 
     if name == 'v3':
         v3dat = glob.glob('input/ghcnm.v3.*/ghcnm*.dat')[0]
-        if v3dat:
-            v3meta_filename = glob.glob('input/ghcnm.v3.*/ghcnm*.inv')[0]
-            v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
-            input = gio.GHCNV3Reader(path=v3dat, meta=v3meta, year_min=base_year)
     else:
-        v3meta_filename = re.sub(r'[.]dat$', '.inv', name)
-        v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
-        input = gio.GHCNV3Reader(name, year_min=base_year, meta=v3meta)
+        v3dat = name
+    v3meta_filename = re.sub(r'[.]dat$', '.inv', v3dat)
+    v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
+    input = gio.GHCNV3Reader(v3dat, year_min=base_year, meta=v3meta)
 
     N = int(key.get('zones', 20))
     global_annual_series = zontem(input, N)
