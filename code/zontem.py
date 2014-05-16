@@ -83,8 +83,9 @@ def split(records, N=20):
     return zone
 
 def combine_records(records):
-    """Takes a list of records, and combined them into one average
-    record."""
+    """
+    Takes a list of records, and combine them into one record.
+    """
 
     # Number months in fixed lengh record
     M = 12 * (last_year - base_year + 1)
