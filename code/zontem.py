@@ -42,8 +42,16 @@ def run(**key):
 
     N = int(key.get('zones', 20))
     global_annual_series = zontem(input, N)
-    save(open('zontemGLB%d.txt' % N, 'w'), global_annual_series)
-    csv_save(open('Zontem.csv', 'w'), global_annual_series)
+
+    # Pick an output file name, which starts with
+    # "Zontem" and is followed by the GHCN-M filename
+    # with a different file extension.
+    basename = os.path.basename(v3dat)
+    basename = re.sub(r'[.]dat$', '', basename)
+    basename = 'Zontem-' + basename
+
+    save(open(basename + '.txt', 'w'), global_annual_series)
+    csv_save(open(basename + '.csv', 'w'), global_annual_series)
 
 def zontem(input, n_zones):
     zones = split(input, n_zones)
