@@ -107,11 +107,11 @@ class Series(object):
     missing_year = [MISSING]*12
 
     def has_data_for_year(self, year):
-        return self.get_a_year(year) != self.missing_year
+        return self.first_year <= year <= self.last_year
 
     def get_a_year(self, year):
         """Get the time series data for a year."""
-        if self.first_year <= year <= self.last_year:
+        if self.has_data_for_year(year):
             start = (year - self.first_year) * 12
             stop = start + 12
             return self.series[start:stop]
