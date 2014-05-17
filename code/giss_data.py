@@ -9,10 +9,6 @@ series (for example, when a zone's station's time series are
 combined).
 """
 
-#: The base year for time series data. Data before this time is not
-#: used in calculations.
-BASE_YEAR = 1880
-
 #: The value that is used to indicate a bad or missing data point.
 MISSING = 9999.0
 
@@ -95,7 +91,7 @@ class Series(object):
         if 'series' in k:
             series = k['series']
             del k['series']
-            self.set_series(BASE_YEAR*12+1, series)
+            self._series = list(series)
 
         self.__dict__.update(k)
 
@@ -207,11 +203,3 @@ class Series(object):
         assert year == self.last_year + 1
          
         self._series.extend(data)
-
-    def set_series(self, first_month, series):
-        """*first_month* specifies the first month of the series where
-        January of (a hypothetical) 0 AD is 1."""
-
-        self._first_month = first_month
-        self._series = list(series)
-

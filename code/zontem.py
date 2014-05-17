@@ -111,7 +111,7 @@ def combine_records(records):
             combine_overlap)
         sys.stderr.write('\r%d' % i)
     sys.stderr.write('\n')
-    return Series(series=combined)
+    return Series(first_year=base_year, series=combined)
 
 def annual_anomaly(monthly):
     """Take a monthly series and convert to annual anomaly.  All months
