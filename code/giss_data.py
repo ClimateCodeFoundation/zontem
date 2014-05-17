@@ -79,14 +79,10 @@ class Series(object):
     """
 
     def __init__(self, **k):
+        self.first_year = None
         self._series = []
         self.ann_anoms = []
         series = None
-        if 'first_year' in k:
-            first_year = k['first_year']
-            if first_year:
-                self._first_year = first_year
-            del k['first_year']
         if 'series' in k:
             series = k['series']
             del k['series']
@@ -109,14 +105,9 @@ class Series(object):
         return len(self._series)
 
     @property
-    def first_year(self):
-        """The year of the first value in the series."""
-        return self._first_year
-
-    @property
     def last_year(self):
         """The year of the last value in the series."""
-        return self._first_year + len(self._series) // 12 - 1
+        return self.first_year + len(self._series) // 12 - 1
 
     def good_count(self):
         """The number of good values in the data."""
@@ -154,8 +145,8 @@ class Series(object):
 
         assert len(data) == 12
 
-        if not self._first_year:
-            self._first_year = year
+        if not self.first_year:
+            self.first_year = year
         else:
             # We have data already, so we may need to pad with missing months
             # Note: This assumes the series is a whole number of years.
