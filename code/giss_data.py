@@ -46,10 +46,10 @@ class Series(object):
     should **always** be treated as read-only; the effect of modifying
     elements is undefined.
 
-    The series coveres the months from `first_month` to `last_month`
-    month inclusive. Months are counted from a non-existant year zero:
-    So 0001-01 (January, 1 AD) has a month number of 13, 0001-02
-    (February) is 14, and so on.
+    The series has data from `first_year` (starting in January)
+    through to `last_year` (ending in December). A series always
+    consists of a whole number of years and includes both
+    `first_year` and `last_year`.
 
     Conventionally, the `station` property refers to the Station
     instance for this series.
@@ -79,14 +79,13 @@ class Series(object):
     """
 
     def __init__(self, **k):
-        self._first_month = None
         self._series = []
         self.ann_anoms = []
         series = None
         if 'first_year' in k:
             first_year = k['first_year']
             if first_year:
-                self._first_month = first_year*12 + 1
+                self._first_year = first_year
             del k['first_year']
         if 'series' in k:
             series = k['series']
@@ -110,37 +109,14 @@ class Series(object):
         return len(self._series)
 
     @property
-    def first_month(self):
-        """The number of the first month in the data series.
-
-        This number is counted from January (being 1) in a non-existant
-	year zero. The property `last_month` provides the other end
-	of the inclusive range of months held in the `series`.
-
-        The `series` contains `last_month` - `first_month` + 1 entries.
-
-        """
-        return self._first_month
-
-    @property
-    def last_month(self):
-        """The number of the last month in the data series.
-
-        The `series` contains ``last_month`` - `first_month` + 1 entries.
-        See `first_month` for details of how months are counted.
-
-        """
-        return (self.first_month + len(self._series) - 1)
-
-    @property
     def first_year(self):
         """The year of the first value in the series."""
-        return (self.first_month - 1) // 12
+        return self._first_year
 
     @property
     def last_year(self):
         """The year of the last value in the series."""
-        return (self.last_month - 1) // 12
+        return self._first_year + len(self._series) // 12 - 1
 
     def good_count(self):
         """The number of good values in the data."""
@@ -153,25 +129,14 @@ class Series(object):
     def has_data_for_year(self, year):
         return self.get_a_year(year) != self.missing_year
 
-    def _get_a_month(self, month):
-        """Get the value for a single month."""
-        idx = month - self.first_month
-        if idx < 0:
-            return MISSING
-        try:
-            return self.series[month - self.first_month]
-        except IndexError:
-            return MISSING
-
-    # If you are tempted to optimise the following, like drj was, note
-    # that it is a little tricky to cope with: years that entirely
-    # precede the first year; and, an initial partial year when the
-    # series does not begin in January.
     def get_a_year(self, year):
         """Get the time series data for a year."""
-        start_month = year * 12 + 1
-        return [self._get_a_month(m)
-                for m in range(start_month, start_month + 12)]
+        if self.first_year <= year <= self.last_year:
+            start = (year - self.first_year) * 12
+            stop = start + 12
+            return self._series[start:stop]
+        else:
+            return list(self.missing_year)
 
     @property
     def station_uid(self):
@@ -187,18 +152,17 @@ class Series(object):
         with MISSING).
         """
 
-        if not self.first_month:
-            self._first_month = year * 12 + 1
+        if not self._first_year:
+            self._first_year = year
         else:
             # We have data already, so we may need to pad with missing months
             # Note: This assumes the series is a whole number of years.
             gap = year - self.last_year - 1
             if gap > 0:
                 self._series.extend([MISSING] * (gap * 12))
-        assert self.first_month % 12 == 1
+        assert len(self) % 12 == 0
         if year < self.first_year:
-            # Ignore years before the first year.  Previously this case
-            # was extremely buggy.
+            # Ignore years before the first year.
             return
         assert year == self.last_year + 1
          
