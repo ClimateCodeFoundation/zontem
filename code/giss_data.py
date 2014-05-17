@@ -68,8 +68,8 @@ class Series(object):
         this is the 11-digit identifier taken from the GHCN file
         (with a "0" appended).
 
-    A first year can be supplied to the constructor which will base the
-    series at that year:
+    When creating instances, the first_year parameter must be
+    supplied:
 
     :Ivar first_year:
         Set the first year of the series.  Data that are
