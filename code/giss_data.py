@@ -80,12 +80,7 @@ class Series(object):
 
     def __init__(self, first_year, **k):
         self.first_year = first_year
-        self._series = []
-        series = None
-        if 'series' in k:
-            series = k['series']
-            del k['series']
-            self._series = list(series)
+        self.series = []
 
         self.__dict__.update(k)
 
@@ -94,24 +89,19 @@ class Series(object):
         return "Series(uid=%r)" % getattr(self, 'uid',
           "<%s>" % id(self))
 
-    @property
-    def series(self):
-        """The series of values (conventionally in degrees Celsius)."""
-        return self._series
-
     def __len__(self):
         """The length of the series."""
-        return len(self._series)
+        return len(self.series)
 
     @property
     def last_year(self):
         """The year of the last value in the series."""
-        return self.first_year + len(self._series) // 12 - 1
+        return self.first_year + len(self.series) // 12 - 1
 
     def good_count(self):
         """The number of good values in the data."""
-        bad_count = self._series.count(MISSING)
-        return len(self._series) - bad_count
+        bad_count = self.series.count(MISSING)
+        return len(self.series) - bad_count
 
     # Year's worth of missing data
     missing_year = [MISSING]*12
@@ -124,7 +114,7 @@ class Series(object):
         if self.first_year <= year <= self.last_year:
             start = (year - self.first_year) * 12
             stop = start + 12
-            return self._series[start:stop]
+            return self.series[start:stop]
         else:
             return list(self.missing_year)
 
@@ -151,11 +141,11 @@ class Series(object):
             # Note: This assumes the series is a whole number of years.
             gap = year - self.last_year - 1
             if gap > 0:
-                self._series.extend([MISSING] * (gap * 12))
+                self.series.extend([MISSING] * (gap * 12))
         assert len(self) % 12 == 0
         if year < self.first_year:
             # Ignore years before the first year.
             return
         assert year == self.last_year + 1
          
-        self._series.extend(data)
+        self.series.extend(data)
