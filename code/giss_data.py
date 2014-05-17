@@ -78,8 +78,8 @@ class Series(object):
         for all records, ensuring that they all start at the same year).
     """
 
-    def __init__(self, **k):
-        self.first_year = None
+    def __init__(self, first_year, **k):
+        self.first_year = first_year
         self._series = []
         series = None
         if 'series' in k:
