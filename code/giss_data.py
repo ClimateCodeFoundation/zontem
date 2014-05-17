@@ -152,6 +152,8 @@ class Series(object):
         with MISSING).
         """
 
+        assert len(data) == 12
+
         if not self._first_year:
             self._first_year = year
         else:
