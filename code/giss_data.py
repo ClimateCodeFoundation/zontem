@@ -81,7 +81,6 @@ class Series(object):
     def __init__(self, **k):
         self.first_year = None
         self._series = []
-        self.ann_anoms = []
         series = None
         if 'series' in k:
             series = k['series']
