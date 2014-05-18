@@ -65,8 +65,7 @@ class Series(object):
 
     :Ivar uid:
         The unique ID for the time series. For GHCN-M v3 series
-        this is the 11-digit identifier taken from the GHCN file
-        (with a "0" appended).
+        this is the 11-digit identifier taken from the GHCN file.
 
     When creating instances, the first_year parameter must be
     supplied:

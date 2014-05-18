@@ -87,9 +87,7 @@ def GHCNV3Reader(path=None, file=None,
     all_missing = [MISSING]*12
 
     for id,lines in itertools.groupby(inp, id11):
-        key = dict(uid=id+'0',
-                   first_year=year_min,
-                   )
+        key = dict(uid=id, first_year=year_min)
         if meta.get(id):
             key['station'] = meta[id]
         record = giss_data.Series(**key)
