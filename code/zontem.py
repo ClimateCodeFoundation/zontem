@@ -33,11 +33,8 @@ def run(**key):
         v3dat = glob.glob('input/ghcnm.v3.*/ghcnm*.dat')[0]
     else:
         v3dat = name
-    v3meta_filename = re.sub(r'[.]dat$', '.inv', v3dat)
-    v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
     input = gio.GHCNV3Reader(v3dat,
       year_min=base_year,
-      meta=v3meta,
       MISSING=MISSING)
 
     N = int(key.get('zones', 20))

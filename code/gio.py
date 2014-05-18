@@ -15,20 +15,21 @@ Input/Output.  Reader and writer for GHCN-M v3 datafiles.
 
 
 import itertools
+import re
 
 # Clear Climate Code
 import giss_data
 
 def GHCNV3Reader(path=None, file=None,
-  meta={},
   year_min=None,
   MISSING=8888):
     """Reads a file in GHCN V3 .dat format and yields each station
     record (as a giss_data.Series instance).
 
-    If a *meta* dict is supplied then the Series instance will have its
-    "station" attribute set to value corresponding to the 11-digit ID in
-    the *meta* dict.
+    Station metadata (location, and so on) is read from a file
+    with a .inv extension (this is read automatically), and is
+    used to populate the `station` attribute of the Series
+    instances that are yielded.
 
     If `year_min` is specified, then only years >= year_min are kept
     (the default, None, keeps all years).
@@ -42,10 +43,17 @@ def GHCNV3Reader(path=None, file=None,
     of this file.
     """
 
+    # If path is supplied, open it to use an input.
     if path:
         inp = open(path)
     else:
         inp = file
+
+    # Derive meta file location from pathname.
+    if not path:
+        path = inp.name
+    v3meta_filename = re.sub(r'[.]dat$', '.inv', path)
+    meta = station_metadata(path=v3meta_filename, format='v3')
 
     def id11(l):
         """Extract the 11-digit station identifier."""
