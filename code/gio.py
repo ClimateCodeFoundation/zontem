@@ -16,19 +16,10 @@ used by other bodies (such as NOAA's v2.mean format).
 
 import itertools
 
-
 # Clear Climate Code
 import giss_data
 
-
-#: Integer code used to indicate missing data.
-#:
-#: This is units of 0.1 celsius. This code is only used when
-#: reading or writing input and working files.
-MISSING = 9999
-
-
-def GHCNV3Reader(path=None, file=None, meta={}, year_min=None, scale=None):
+def GHCNV3Reader(path=None, file=None, meta={}, year_min=None, MISSING=8888, scale=None):
     """Reads a file in GHCN V3 .dat format and yields each station
     record (as a giss_data.Series instance).
 
@@ -122,7 +113,7 @@ class GHCNV3Writer(object):
     field in the GHCN V3 file, otherwise 'TAVG' is used.
     """
 
-    def __init__(self, path=None, file=None, scale=0.01, **k):
+    def __init__(self, path=None, file=None, MISSING=8888, scale=0.01, **k):
         if path is not None:
             self.f = open(path, "w")
         else:

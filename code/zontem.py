@@ -38,7 +38,10 @@ def run(**key):
         v3dat = name
     v3meta_filename = re.sub(r'[.]dat$', '.inv', v3dat)
     v3meta = gio.station_metadata(path=v3meta_filename, format='v3')
-    input = gio.GHCNV3Reader(v3dat, year_min=base_year, meta=v3meta)
+    input = gio.GHCNV3Reader(v3dat,
+      year_min=base_year,
+      meta=v3meta,
+      MISSING=MISSING)
 
     N = int(key.get('zones', 20))
     global_annual_series = zontem(input, N)
