@@ -25,9 +25,6 @@ combine_overlap = 20
 # Most recent year of any input record.
 last_year = 0
 
-# Meta data
-v2inv = os.path.join('input', 'v2.inv')
-
 def run(**key):
     import glob
     name = key.get('input', 'v3')
