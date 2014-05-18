@@ -2,15 +2,15 @@
 #
 # gio.py
 #
-# Paul Ollis and David Jones, 2010-03-10
+# 2014-05-18
+# David Jones
 #
-# (was previously called giss_io.py, then io.py)
+# Originally from ccc-gistemp code written by
+# Paul Ollis and David Jones, 2010-03-10
 
-"""GISTEMP Input/Output.  Readers and writers for datafiles used by NASA
-GISS GISTEMP.
 
-Some of these file formats are peculiar to GISS, others are defined and
-used by other bodies (such as NOAA's v2.mean format).
+"""
+Input/Output.  Reader and writer for GHCN-M v3 datafiles.
 """
 
 
@@ -19,7 +19,11 @@ import itertools
 # Clear Climate Code
 import giss_data
 
-def GHCNV3Reader(path=None, file=None, meta={}, year_min=None, MISSING=8888, scale=None):
+def GHCNV3Reader(path=None, file=None,
+  meta={},
+  year_min=None,
+  MISSING=8888,
+  scale=None):
     """Reads a file in GHCN V3 .dat format and yields each station
     record (as a giss_data.Series instance).
 
