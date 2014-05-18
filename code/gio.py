@@ -22,8 +22,7 @@ import giss_data
 def GHCNV3Reader(path=None, file=None,
   meta={},
   year_min=None,
-  MISSING=8888,
-  scale=None):
+  MISSING=8888):
     """Reads a file in GHCN V3 .dat format and yields each station
     record (as a giss_data.Series instance).
 
@@ -34,11 +33,10 @@ def GHCNV3Reader(path=None, file=None,
     If `year_min` is specified, then only years >= year_min are kept
     (the default, None, keeps all years).
     
-    If *scale* is specified then the (integer) values in the file are
-    multiplied by *scale* before being returned.  When it is not
-    specified (the normal case), the scale is derived from the element
-    specified in the file (normally for monthly means this is "TAVG" and
-    the scale implied by that is 0.01 (degrees C)).
+    The (integer) values in the file are scaled according to the
+    element type. So for TAVG the values stored in the file are
+    in units of 0.01 degrees C, but the returned values from
+    this function are in degrees C.
 
     See ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/v3/README for format
     of this file.
@@ -97,10 +95,7 @@ def GHCNV3Reader(path=None, file=None,
             if not noted_element:
                 note_element(element)
                 noted_element = True
-            if scale:
-                multiplier = scale
-            else:
-                multiplier = element_scale[element]
+            multiplier = element_scale[element]
             values = [convert(line[i:i+8]) for i in range(19,115,8)]
             if values != all_missing:
                 record.add_year(year, values)
