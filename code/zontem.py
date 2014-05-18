@@ -47,7 +47,6 @@ def run(**key):
     basename = re.sub(r'[.]dat$', '', basename)
     basename = 'Zontem-' + basename
 
-    save(open(basename + '.txt', 'w'), global_annual_series)
     csv_save(open(basename + '.csv', 'w'), global_annual_series)
 
 def zontem(input, n_zones):
@@ -139,22 +138,6 @@ def csv_save(out, series):
         if not valid(val):
             val=''
         csvfile.writerow([base_year + i, val])
-
-def save(out, series):
-    """Save an annual series.  Same format as GISTEMP GLB.txt format.
-    But only just enough so that vischeck.py can read it."""
-
-    def fmt(v):
-        s = "%4d" % (v*100)
-        if len(s) > 4:
-            return '****'
-        return s
-
-    for i,val in enumerate(map(fmt, series)):
-        year = base_year + i
-        out.write(
-          ("%04d " + 12*" ****" + "   %4s**** " + 4*" ****" + " %d\n") %
-          (year, val, year))
 
 
 def main(argv=None):
