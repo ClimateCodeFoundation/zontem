@@ -36,17 +36,16 @@ class Station(object):
 
 
 class Series(object):
-    """Monthly Series.
+    """Monthly Series of data.
 
     (conventionally the data are average monthly temperature values
     in degrees Celsius)
 
     An instance contains a series of monthly data accessible via the
-    `series` property.  This property
-    should **always** be treated as read-only; the effect of modifying
-    elements is undefined.
+    `series` property.  This property should **always** be treated as
+    read-only; the effect of modifying elements is undefined.
 
-    The series has data from `first_year` (starting in January)
+    A series has data from `first_year` (starting in January)
     through to `last_year` (ending in December). A series always
     consists of a whole number of years and includes both
     `first_year` and `last_year`.
@@ -54,9 +53,10 @@ class Series(object):
     Conventionally, the `station` property refers to the Station
     instance for this series.
 
-    All the instance variables should be treated as read-only and you
-    should only set values in the data series using the provided
-    methods.
+    All the instance variables should be treated as read-only.
+    Only the `add_year` method (which appends a single year of
+    data) can be used to change the instance after it has been
+    created.
 
     This class is not designed for subclassing. Please do not do it.
 
