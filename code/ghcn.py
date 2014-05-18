@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# gio.py
+# ghcn.py
 #
 # 2014-05-18
 # David Jones

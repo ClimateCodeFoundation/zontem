@@ -15,7 +15,7 @@ import re
 import sys
 
 # ZONTEM
-import gio
+import ghcn
 from giss_data import valid, MISSING, Series
 import series
 
@@ -33,7 +33,7 @@ def run(**key):
         v3dat = glob.glob('input/ghcnm.v3.*/ghcnm*.dat')[0]
     else:
         v3dat = name
-    input = gio.GHCNV3Reader(v3dat,
+    input = ghcn.GHCNV3Reader(v3dat,
       year_min=base_year,
       MISSING=MISSING)
 
