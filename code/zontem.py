@@ -9,15 +9,15 @@
 # A simple computation of global average temperature anomaly via zonal
 # averages.
 
-# Clear Climate Code
-import gio
-from giss_data import valid, MISSING, Series
-import series
-
 import math
 import os
 import re
 import sys
+
+# ZONTEM
+import gio
+from giss_data import valid, MISSING, Series
+import series
 
 base_year = 1880
 combine_overlap = 20
