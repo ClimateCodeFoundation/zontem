@@ -137,6 +137,8 @@ def csv_save(out, series):
     for i, val in enumerate(series):
         if not valid(val):
             val=''
+        else:
+            val = "{: 7.3f}".format(val)
         csvfile.writerow([base_year + i, val])
 
 
