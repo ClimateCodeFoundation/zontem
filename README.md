@@ -41,21 +41,31 @@ where a year has all 12 monthly anomalies present.
 Comparison
 ==========
 
-The most obvious competing data products are GISTEMP, CRUTEM4,
-NOAA. Each of these compute global temperature anomaly via a
-gridded product. ZONTEM dispenses with the grid, instead using a
-small number of zones (you could alternatively think of it as a
-1x20 grid). Each of these products has a QA step that rejects
-invalid station records, and an adjustment to remove
-inhomogeneities. While these may be important for producing
-reasonable grid values, for a global analysis they have very
-little effect. ZONTEM dispenses with these steps (but note that
-the GHCN-M V3 dataset has been quality controlled). Each of the
-competing products have different methods for weighting a
-station when computing grid cells. ZONTEM dispenses with such
-complications and weights all stations in a zone equally.
+The most obvious competing analyses of global temperature change
+are GISTEMP, CRUTEM4, NOAA (this is not an exhaustive list).
 
-GISTEMP, and NOAA have an optional procedure where Sea Surface
-Temperatures (SST) are used over the ocean. CRUTEM4 has a sister
-product, HadCRUT, that also incorporates SSTs. ZONTEM does not
-incorporate SSTs.
+ - data sources. ZONTEM uses the GHCN-M product as its only data
+   source. Other analyses use this supplemented with SCAR READER
+   records, various priv comm records, or replace GHCN-M with a
+   privately maintained database with similar coverage.
+
+ - SSTs. Other analyses may have an optional procedure where Sea Surface
+   Temperatures (SST) are used over the ocean. CRUTEM4 has a sister
+   product, HadCRUT, that also incorporates SSTs. Whilst
+   recognising that the Earth's surface is mostly ocean, ZONTEM does
+   not incorporate SSTs.
+
+ - gridding. Other analyses compute global temperature anomaly via a
+   gridded product (the gridded product may be regarded as more
+   essential than the global summary). ZONTEM dispenses with the grid,
+   instead using a small number of zones (you could alternatively think
+   of it as a 1x20 grid).
+   
+ - QC. Other analyses may have a QC step that rejects
+   invalid station records. ZONTEM assumes that the input
+   has been quality controlled.
+
+ - inhomogeneity. Other analyses may have a step that adjusts
+   or rejects inhomogeneous records. ZONTEM does not perform such
+   a step (but it is possible to use the adjusted version of
+   GHCN-M as input).
