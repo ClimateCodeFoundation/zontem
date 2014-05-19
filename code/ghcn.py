@@ -18,12 +18,12 @@ import itertools
 import re
 
 # Clear Climate Code
-import giss_data
+import data
 
 class M:
     def read(path=None, file=None, year_min=None, MISSING=8888):
         """Reads a file in GHCN V3 .dat format and yields each station
-        record (as a giss_data.Series instance).
+        record (as a data.Series instance).
 
         Station metadata (location, and so on) is read from a file
         with a .inv extension (this is read automatically), and is
@@ -95,7 +95,7 @@ class M:
             key = dict(uid=id, first_year=year_min)
             if meta.get(id):
                 key['station'] = meta[id]
-            record = giss_data.Series(**key)
+            record = data.Series(**key)
             for line in lines:
                 year = int(line[11:15])
                 element = line[15:19]
@@ -225,7 +225,7 @@ class M:
         for line in file:
             d = dict((field, convert(line[a:b]))
                       for field, (a,b,convert) in fields.items())
-            result[d['uid']] = giss_data.Station(**d)
+            result[d['uid']] = data.Station(**d)
 
         return result
 

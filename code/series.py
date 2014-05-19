@@ -5,7 +5,8 @@
 # Nick Barnes, Ravenbrook Limited, 2010-03-08
 
 import itertools
-from giss_data import valid, invalid, MISSING
+
+from data import valid, invalid, MISSING
 
 """
 Shared series-processing code in the GISTEMP algorithm.

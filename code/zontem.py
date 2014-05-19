@@ -16,7 +16,7 @@ import sys
 
 # ZONTEM
 import ghcn
-from giss_data import valid, MISSING, Series
+from data import valid, MISSING, Series
 import series
 
 base_year = 1880
