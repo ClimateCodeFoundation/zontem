@@ -19,6 +19,8 @@ import ghcn
 from data import valid, MISSING, Series
 import series
 
+parent_dir = os.path.join(os.path.dirname(__file__), '..')
+
 base_year = 1880
 combine_overlap = 20
 
@@ -30,7 +32,6 @@ def run(**key):
     name = key.get('input', 'v3')
 
     if name == 'v3':
-        parent_dir = os.path.join(os.path.dirname(__file__), '..')
         input_dir = os.path.join(parent_dir, 'input')
         dat_glob = os.path.join(input_dir, 'ghcnm.v3.*/ghcnm*.dat')
         v3dat = glob.glob(dat_glob)[0]
@@ -50,7 +51,10 @@ def run(**key):
     basename = re.sub(r'[.]dat$', '', basename)
     basename = 'Zontem-' + basename
 
-    csv_save(open(basename + '.csv', 'w'), global_annual_series)
+    output_dir = os.path.join(parent_dir, 'output')
+    csv_filename = os.path.join(output_dir, basename + '.csv')
+
+    csv_save(open(csv_filename, 'w'), global_annual_series)
 
 def zontem(input, n_zones):
     zones = split(input, n_zones)
