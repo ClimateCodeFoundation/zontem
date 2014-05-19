@@ -19,7 +19,7 @@ def as_gistemp(out, series):
     def fmt(v):
         if v is None:
             return '****'
-        s = "%4d" % (v*100)
+        s = "{:4.0f}".format(v*100)
         if len(s) > 4:
             return '****'
         return s
