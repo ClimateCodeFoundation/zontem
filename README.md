@@ -12,9 +12,8 @@ Running ZONTEM
 ==============
 
 ```
-cd code
 # somehow get GHCN-M V3 into the input/ directory and unpack it
-./zontem.py
+code/zontem.py
 ```
 
 Method
