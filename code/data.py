@@ -117,11 +117,6 @@ class Series(object):
         else:
             return list(self.missing_year)
 
-    @property
-    def station_uid(self):
-        """The unique ID of the corresponding station."""
-        return self.uid[:11]
-
     # Mutators below here
 
     def add_year(self, year, data):
