@@ -68,8 +68,8 @@ def split(records, N=20):
         last_year = max(last_year, record.last_year)
         lat = record.station.lat
         # Calculate Z, distance from equatorial plane (normalised).
-        z = math.sin(lat*math.pi/180.0)
-        i = int(math.floor((z+1)/2*N))
+        z = math.sin(math.radians(lat))
+        i = int(math.floor((z+1.0)/2*N))
         # Fix Zone of hypothetical North Pole station.
         i = min(i, N-1)
         zone[i].append(record)
