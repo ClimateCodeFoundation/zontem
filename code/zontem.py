@@ -30,7 +30,10 @@ def run(**key):
     name = key.get('input', 'v3')
 
     if name == 'v3':
-        v3dat = glob.glob('input/ghcnm.v3.*/ghcnm*.dat')[0]
+        parent_dir = os.path.join(os.path.dirname(__file__), '..')
+        input_dir = os.path.join(parent_dir, 'input')
+        dat_glob = os.path.join(input_dir, 'ghcnm.v3.*/ghcnm*.dat')
+        v3dat = glob.glob(dat_glob)[0]
     else:
         v3dat = name
     input = ghcn.M.read(v3dat,
