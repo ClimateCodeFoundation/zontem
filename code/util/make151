@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Makes the test-fixture/the151.{dat,inv} files
+# Makes the test/.fixture/the151.{dat,inv} files
 # (which are normally commited to the repo)
 
-egrep $(awk '!got[int($2)]++{print$1}' input/ghcnm.v3.*/*.inv | paste -s -d\| -) input/ghcnm.v3.*/*.dat > test-fixture/the151.dat
-egrep $(awk '!got[int($2)]++{print$1}' input/ghcnm.v3.*/*.inv | paste -s -d\| -) input/ghcnm.v3.*/*.inv > test-fixture/the151.inv
+egrep $(awk '!got[int($2)]++{print$1}' input/ghcnm.v3.*/*.inv | paste -s -d\| -) input/ghcnm.v3.*/*.dat > test/.fixture/the151.dat
+egrep $(awk '!got[int($2)]++{print$1}' input/ghcnm.v3.*/*.inv | paste -s -d\| -) input/ghcnm.v3.*/*.inv > test/.fixture/the151.inv
 
-(test -s test-fixture/the151.dat &&
- test -s test-fixture/the151.inv)
+(test -s test/.fixture/the151.dat &&
+ test -s test/.fixture/the151.inv)
