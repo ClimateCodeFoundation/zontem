@@ -1,3 +1,0 @@
-#!/bin/sh
-
-./zontem.py --input test-fixture/the151.dat
