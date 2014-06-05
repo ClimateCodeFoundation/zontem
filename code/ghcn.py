@@ -23,8 +23,13 @@ class Station(object):
 
     This holds the series and metadata for a single station.
 
-    The attributes stored depend entirely on the IO code that
-    creates the instance. For GHCN-M V3 see the ghcn.py file.
+    The class is completely generic, any properties can be
+    stored on the instance by passing them as keyword arguments
+    to the constructor.
+
+    In this module, the .series property is used to store a list
+    of monthly data values, and other properties are assigned
+    from the station metadata read from the .inv file.
     """
 
     def __init__(self, **values):
