@@ -90,63 +90,6 @@ class M:
             if len(series) != 0:
                 yield Station(series=series, **d)
 
-    class Writer(object):
-        """Write a file in GHCN v3 format. See also GHCNV3Reader.  The
-        format is documented in
-        ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/v3/README .  If the records
-        have an 'element' property, then that is used for the 'element'
-        field in the GHCN V3 file, otherwise 'TAVG' is used.
-        """
-
-        def __init__(self, path=None, file=None, MISSING=8888, scale=0.01, **k):
-            if path is not None:
-                self.f = open(path, "w")
-            else:
-                self.f = file
-            self.scale = scale
-
-        def to_text(self, t):
-            if t == MISSING:
-                return "-9999"
-            else:
-                return "%5d" % t
-
-        def write(self, record):
-            """Write an entire record out."""
-            for year in range(record.first_year, record.last_year + 1):
-                if not record.has_data_for_year(year):
-                    continue
-                element = getattr(record, 'element', 'TAVG')
-                self.writeyear(record.uid, element, year, record.get_a_year(year))
-
-        def writeyear(self, uid, element, year, temps):
-            """Write a single year's worth of data out.  *temps* should
-            contain 12 monthly values."""
-
-            if len(uid) > 11:
-                # Convert GHCN v2 style identifier into 11-digit v3
-                # identifier; use 12th digit for the source flag.
-                assert len(uid) == 12
-                sflag = uid[11]
-            elif len(uid) == 6:
-                # Assume it's a 6 digit identifier from USHCN.
-                uid = '42500' + uid
-                sflag = 'U'
-            else:
-                sflag = ' '
-            id11 = "%-11.11s" % uid
-            assert len(element) == 4
-
-            tstrings = [self.to_text(t)
-                       for t in internal_to_external(temps, scale=self.scale)]
-            flags = ['  ' + sflag] * 12
-
-            self.f.write('%s%04d%s%s\n' % (id11, year, element,
-              ''.join(t+flag for t,flag in zip(tstrings,flags))))
-
-        def close(self):
-            self.f.close()
-
 
     def station_metadata(path=None, file=None, format='v3'):
         """Read a collection of station metadata from file, return
