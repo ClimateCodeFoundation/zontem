@@ -124,22 +124,22 @@ class M:
         # See ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/v3/README for format
         # of GHCN's metadata file.
         v3_ghcn_fields = dict(
-            uid=    (0,    11, str),
-            lat=    (12,   20, float),
-            lon=    (21,   30, float),
-            stelev= (31,   37, float),
-            name=   (38,   68, str),
-            grelev= (69,   73, blank_int),
-            popcls= (73,   74, str),
-            popsiz= (75,   79, blank_int),
-            topo=   (79,   81, str),
-            stveg=  (81,   83, str),
-            stloc=  (83,   85, str),
-            ocndis= (85,   87, blank_int),
-            airstn= (87,   88, str),
-            towndis=(88,   90, blank_int),
-            grveg=  (90,  106, str),
-            popcss= (106, 107, str),
+            uid       = (0,    11, str),
+            latitude  = (12,   20, float),
+            longitude = (21,   30, float),
+            stelev    = (31,   37, float),
+            name      = (38,   68, str),
+            grelev    = (69,   73, blank_int),
+            popcls    = (73,   74, str),
+            popsiz    = (75,   79, blank_int),
+            topo      = (79,   81, str),
+            stveg     = (81,   83, str),
+            stloc     = (83,   85, str),
+            ocndis    = (85,   87, blank_int),
+            airstn    = (87,   88, str),
+            towndis   = (88,   90, blank_int),
+            grveg     = (90,  106, str),
+            popcss    = (106, 107, str),
         )
 
         fields = v3_ghcn_fields

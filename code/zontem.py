@@ -75,9 +75,8 @@ def split(stations, N=20):
 
     for station in stations:
         max_series_length = max(max_series_length, len(station.series))
-        latitude = station.lat
         # Calculate Z, distance from equatorial plane (normalised).
-        z = math.sin(math.radians(latitude))
+        z = math.sin(math.radians(station.latitude))
         i = int(math.floor((z+1.0)/2*N))
         # Fix Zone of hypothetical North Pole station.
         i = min(i, N-1)
