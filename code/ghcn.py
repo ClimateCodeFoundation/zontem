@@ -77,14 +77,6 @@ class M:
             """Extract the 11-digit station identifier."""
             return l[:11]
 
-        noted_element = False
-        def note_element(element):
-            """Print the meteorological element we are reading."""
-            friendly = dict(TAVG='average temperature',
-              TMIN='mean minimum temperature',
-              TMAX='mean maximum temperature')
-            print "(Reading %s)" % friendly[element]
-
         for id,lines in itertools.groupby(inp, id11):
             d = dict(uid=id, first_year=min_year)
             if meta.get(id):
