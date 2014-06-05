@@ -1,3 +1,8 @@
 #!/bin/sh
 
+OUTPUT=output/Zontem-the151.csv
+
+rm -f "$OUTPUT"
 code/zontem.py --input test/.fixture/the151.dat
+SUM=$(awk -F, '{s+=$2};END{print s}' "$OUTPUT")
+test "$SUM" = -0.303 || echo oops
