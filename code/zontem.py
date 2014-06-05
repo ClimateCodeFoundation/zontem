@@ -16,7 +16,7 @@ import sys
 
 # ZONTEM
 import ghcn
-from data import valid, MISSING, Series
+from data import valid, MISSING
 import series
 
 parent_dir = os.path.join(os.path.dirname(__file__), '..')
@@ -24,8 +24,8 @@ parent_dir = os.path.join(os.path.dirname(__file__), '..')
 base_year = 1880
 combine_overlap = 20
 
-# Most recent year of any input record.
-last_year = 0
+# Maximum length of any input series.
+max_series_length = 0
 
 def run(**key):
     import glob
@@ -38,7 +38,7 @@ def run(**key):
     else:
         v3dat = name
     input = ghcn.M.read(v3dat,
-      year_min=base_year,
+      min_year=base_year,
       MISSING=MISSING)
 
     N = int(key.get('zones', 20))
@@ -63,23 +63,25 @@ def zontem(input, n_zones):
     annual_series = annual_anomaly(global_average)
     return annual_series
 
-def split(records, N=20):
-    """Split a series of records into equal area latitudinal zones."""
+def split(stations, N=20):
+    """
+    Split a series of stations into `N` equal area latitudinal zones.
+    """
 
-    global last_year
+    global max_series_length
 
     # one list for each zone
     zone = [[] for _ in range(N)]
 
-    for record in records:
-        last_year = max(last_year, record.last_year)
-        lat = record.station.lat
+    for station in stations:
+        max_series_length = max(max_series_length, len(station.series))
+        latitude = station.lat
         # Calculate Z, distance from equatorial plane (normalised).
-        z = math.sin(math.radians(lat))
+        z = math.sin(math.radians(latitude))
         i = int(math.floor((z+1.0)/2*N))
         # Fix Zone of hypothetical North Pole station.
         i = min(i, N-1)
-        zone[i].append(record)
+        zone[i].append(station.series)
         sys.stderr.write('\rZone %2d: %4d records' % (i, len(zone[i])))
         sys.stderr.flush()
     sys.stderr.write('\n')
@@ -90,8 +92,8 @@ def combine_records(records):
     Takes a list of records, and combine them into one record.
     """
 
-    # Number months in fixed lengh record
-    M = 12 * (last_year - base_year + 1)
+    # Number of months in fixed length record.
+    M = max_series_length
     # Make sure all the records are the same length, namely *M*.
     combined = [MISSING]*M
 
@@ -99,22 +101,27 @@ def combine_records(records):
         return combined
 
     def good_months(record):
-        return record.good_count()
+        count = 0
+        for v in record:
+            if v != MISSING:
+                count += 1
+        return count
 
     records = iter(sorted(records, key=good_months, reverse=True))
-    first = records.next()
 
-    combined[:len(first.series)] = first.series
+    first_series = records.next()
+    combined[:len(first_series)] = first_series
     combined_weight = [valid(v) for v in combined]
+
     for i,record in enumerate(records):
         new = [MISSING]*len(combined)
-        new[:len(record.series)] = record.series
+        new[:len(record)] = record
         series.combine(combined, combined_weight,
             new, 1.0,
             combine_overlap)
         sys.stderr.write('\r%d' % i)
     sys.stderr.write('\n')
-    return Series(first_year=base_year, series=combined)
+    return combined
 
 def annual_anomaly(monthly):
     """Take a monthly series and convert to annual anomaly.  All months
@@ -122,7 +129,7 @@ def annual_anomaly(monthly):
     value."""
 
     # Convert to monthly anomalies...
-    means, anoms = series.monthly_anomalies(monthly.series)
+    means, anoms = series.monthly_anomalies(monthly)
     result = []
     # Then take 12 months at a time and annualise.
     for year in zip(*anoms):

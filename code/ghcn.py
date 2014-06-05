@@ -16,19 +16,33 @@ Input/Output.  Reader and writer for GHCN-M v3 datafiles.
 
 import itertools
 import re
+from collections import defaultdict
 
-# Clear Climate Code
-import data
+class Station(object):
+    """A station.
+
+    This holds the series and metadata for a single station.
+
+    The attributes stored depend entirely on the IO code that
+    creates the instance. For GHCN-M V3 see the ghcn.py file.
+    """
+
+    def __init__(self, **values):
+        self.__dict__.update(values)
+
+    def __repr__(self):
+        return "Station(%r)" % self.__dict__
 
 class M:
-    def read(path=None, file=None, year_min=None, MISSING=8888):
+    def read(path=None, file=None, min_year=None, MISSING=8888):
         """Reads a file in GHCN V3 .dat format and yields each station
-        record (as a data.Series instance).
+        as a Station instance. The instance will have a series
+        attribute.
 
         Station metadata (location, and so on) is read from a file
         with a .inv extension (this is read automatically), and is
-        used to populate the `station` attribute of the Series
-        instances that are yielded.
+        used to populate the attributes of the Station instances that
+        are yielded.
 
         If `year_min` is specified, then only years >= year_min are kept
         (the default, None, keeps all years).
@@ -66,48 +80,15 @@ class M:
               TMAX='mean maximum temperature')
             print "(Reading %s)" % friendly[element]
 
-        element_scale = dict(TAVG=0.01, TMIN=0.01, TMAX=0.01)
-        # Quality-control flags that cause value to be rejected.
-        # :todo: make parameter.  When using the QCA dataset
-        # we shouldn't actually see any of these flags.
-        reject = 'DKOSTW'
-
-        def convert(s):
-            """Convert single value. *s* is the 8 character string: 5
-            characters for value, 3 for flags."""
-
-            # This function captures *multiplier* which can, in principle,
-            # change for each line.
-
-            v = int(s[:5])
-            # Flags for Measurement (missing days), Quality, and
-            # Source.
-            m,q,s = s[5:8]
-            if q in reject or v == -9999:
-                v = MISSING
-            else:
-                v *= multiplier
-            return v
-
-        all_missing = [MISSING]*12
-
         for id,lines in itertools.groupby(inp, id11):
-            key = dict(uid=id, first_year=year_min)
+            d = dict(uid=id, first_year=min_year)
             if meta.get(id):
-                key['station'] = meta[id]
-            record = data.Series(**key)
-            for line in lines:
-                year = int(line[11:15])
-                element = line[15:19]
-                if not noted_element:
-                    note_element(element)
-                    noted_element = True
-                multiplier = element_scale[element]
-                values = [convert(line[i:i+8]) for i in range(19,115,8)]
-                if values != all_missing:
-                    record.add_year(year, values)
-            if len(record) != 0:
-                yield record
+                d.update(meta[id])
+
+            series = series_from_lines(lines, MISSING, min_year)
+
+            if len(series) != 0:
+                yield Station(series=series, **d)
 
     class Writer(object):
         """Write a file in GHCN v3 format. See also GHCNV3Reader.  The
@@ -168,7 +149,8 @@ class M:
 
 
     def station_metadata(path=None, file=None, format='v3'):
-        """Read station metadata from file, return it as a dictionary.
+        """Read a collection of station metadata from file, return
+        it as a dictionary of dictionaries.
         *format* specifies the format of the metadata; it can only be
         'v3' (for GHCN-M v3). It exists to provide compatibility
         with an alternate implementation of the same interface.
@@ -225,9 +207,57 @@ class M:
         for line in file:
             d = dict((field, convert(line[a:b]))
                       for field, (a,b,convert) in fields.items())
-            result[d['uid']] = data.Station(**d)
+            result[d['uid']] = d
 
         return result
+
+def series_from_lines(lines, MISSING, min_year):
+    all_missing = [MISSING]*12
+
+    # Make a dictionary that maps from year to the 12 data
+    # values for that year. Use a default of 12 MISSING values.
+    d = defaultdict(lambda:all_missing)
+    for line in lines:
+        year = int(line[11:15])
+        element = line[15:19]
+        multiplier = ELEMENT_SCALE[element]
+        values = [convert_single(line[i:i+8], multiplier, MISSING)
+          for i in range(19,115,8)]
+        if values != all_missing:
+            d[year] = values
+
+    # Convert the dictionary to a single list.
+    l = []
+    if min_year is not None:
+        start = min_year
+    else:
+        start = min(d)
+    for year in range(start, max(d)+1):
+        l.extend(d[year])
+    return l
+
+ELEMENT_SCALE = dict(TAVG=0.01, TMIN=0.01, TMAX=0.01)
+
+def convert_single(s, multiplier, MISSING):
+    """
+    Convert single value. *s* is the 8 character string: 5
+    characters for value, 3 for flags. Non-MISSING values are
+    multiplied by *multiplier*.
+    """
+
+    # Quality-control flags that cause value to be rejected.
+    # :todo: make parameter.  When using the QCA dataset
+    # we shouldn't actually see any of these flags.
+    reject = 'DKOSTW'
+
+    v = int(s[:5])
+    # Flags for Measurement (missing days), Quality, and
+    # Source.
+    m,q,s = s[5:8]
+    if q in reject or v == -9999:
+        return MISSING
+    v *= multiplier
+    return v
 
 # We'd like to access ghcn.M.thing as a function, not a
 # bound method. This piece of code arranges that. Not
