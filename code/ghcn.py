@@ -10,7 +10,7 @@
 
 
 """
-Input/Output.  Reader and writer for GHCN-M v3 datafiles.
+ghcn.M.read() reads GHCN-M v3 datafiles.
 """
 
 
@@ -40,7 +40,7 @@ class Station(object):
 
 class M:
     def read(path=None, file=None, min_year=None, MISSING=8888):
-        """Reads a file in GHCN V3 .dat format and yields each station
+        """Reads a file in GHCN-M v3 .dat format and yields each station
         as a Station instance. The instance will have a series
         attribute.
 
@@ -97,7 +97,8 @@ class M:
 
 
     def station_metadata(path=None, file=None, format='v3'):
-        """Read a collection of station metadata from file, return
+        """
+        Read a collection of station metadata from file, return
         it as a dictionary of dictionaries.
         *format* specifies the format of the metadata; it can only be
         'v3' (for GHCN-M v3). It exists to provide compatibility
@@ -113,9 +114,9 @@ class M:
 
         assert 'v3' == format
 
-        # With the beta GHCN V3 metadata, several fields are blank for some
-        # stations.  When processed as ints, these will get converted to
-        # None."""
+        # With the beta GHCN-M v3 metadata, several fields are blank for
+        # some stations.  When processed as ints, these will get
+        # converted to None.
         def blank_int(s):
             """Convert a field to an int, or if it is blank, convert to
             None."""
@@ -124,7 +125,7 @@ class M:
                 return None
             return int(s)
 
-        # Fields are named after the designators used in the GHCN v3
+        # Fields are named after the designators used in the GHCN-M v3
         # documentation except for:
         # uid (GHCN: ID), lat (GHCN: latitude), lon (GHCN: longitude).
 

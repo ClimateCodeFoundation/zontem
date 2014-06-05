@@ -2,7 +2,7 @@
 #
 # zontem.py
 #
-# David Jones, 2010-08-05
+# David Jones, 2010-08-05, revised 2014-06-05
 #
 # Zonal Temperatures
 #
@@ -124,9 +124,11 @@ def combine_records(records):
     return combined
 
 def annual_anomaly(monthly):
-    """Take a monthly series and convert to annual anomaly.  All months
+    """
+    Take a monthly series and convert to annual anomaly.  All months
     (Jan to Dec) are required to be present to compute an anomaly
-    value."""
+    value.
+    """
 
     # Convert to monthly anomalies...
     means, anoms = series.monthly_anomalies(monthly)
