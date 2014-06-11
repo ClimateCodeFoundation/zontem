@@ -19,7 +19,8 @@ import re
 from collections import defaultdict
 
 class Station(object):
-    """A station.
+    """
+    A station.
 
     This holds the series and metadata for a single station.
 
@@ -40,7 +41,8 @@ class Station(object):
 
 class M:
     def read(path=None, file=None, min_year=None, MISSING=8888):
-        """Reads a file in GHCN-M v3 .dat format and yields each station
+        """
+        Reads a file in GHCN-M v3 .dat format and yields each station
         as a Station instance. The instance will have a series
         attribute.
 
@@ -75,6 +77,7 @@ class M:
 
         def id11(l):
             """Extract the 11-digit station identifier."""
+
             return l[:11]
 
         for id,lines in itertools.groupby(inp, id11):
@@ -114,8 +117,9 @@ class M:
         # some stations.  When processed as ints, these will get
         # converted to None.
         def blank_int(s):
-            """Convert a field to an int, or if it is blank, convert to
-            None."""
+            """
+            Convert a field to an int, or if blank, convert to None.
+            """
 
             if s.isspace():
                 return None

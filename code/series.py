@@ -14,7 +14,8 @@ Shared series-processing code in the GISTEMP algorithm.
 
 
 def combine(composite, weight, new, new_weight, min_overlap):
-    """Run the GISTEMP combining algorithm.  This combines the data
+    """
+    Run the GISTEMP combining algorithm.  This combines the data
     in the *new* array into the *composite* array.  *new* has weight
     *new_weight*; *composite* has weights in the *weight* array.
 
@@ -54,7 +55,8 @@ def combine(composite, weight, new, new_weight, min_overlap):
     return data_combined
 
 def bias_overlap(ps, qs):
-    """Compute the bias between series *ps* and *qs* (positive
+    """
+    Compute the bias between series *ps* and *qs* (positive
     when *qs* is on average bigger than *ps*).
 
     Returns a (bias, overlap) pair where overlap is the number
@@ -80,7 +82,8 @@ def bias_overlap(ps, qs):
     return (bias, overlap)
 
 def ensure_array(exemplar, item):
-    """Coerces *item* to be an array (linear sequence); if *item* is
+    """
+    Coerces *item* to be an array (linear sequence); if *item* is
     already an array it is returned unchanged.  Otherwise, an array of
     the same length as exemplar is created which contains *item* at
     every index.  The fresh array is returned.
@@ -93,7 +96,8 @@ def ensure_array(exemplar, item):
         return (item,)*len(exemplar)
 
 def anomalize(data, reference_period=None, base_year=-9999):
-    """Turn the series *data* into anomalies, based on monthly
+    """
+    Turn the series *data* into anomalies, based on monthly
     averages over the *reference_period*, for example (1951, 1980).
     *base_year* is the first year of the series.  If *reference_period*
     is None then the averages are computed over the whole series.
@@ -111,9 +115,11 @@ def anomalize(data, reference_period=None, base_year=-9999):
         data[m::12] = anoms[m]
 
 def valid_mean(seq, min=1):
-    """Takes a sequence, *seq*, and computes the mean of the valid
+    """
+    Takes a sequence, *seq*, and computes the mean of the valid
     items (using the valid() function).  If there are fewer than *min*
-    valid items, the mean is MISSING."""
+    valid items, the mean is MISSING.
+    """
 
     count = 0
     sum = 0.0
@@ -127,7 +133,8 @@ def valid_mean(seq, min=1):
         return MISSING
 
 def monthly_anomalies(data, reference_period=None, base_year=-9999):
-    """Calculate monthly anomalies, by subtracting from every datum
+    """
+    Calculate monthly anomalies, by subtracting from every datum
     the mean for its month.  A pair of (monthly_mean, monthly_anom) is
     returned.  *monthly_mean* is a 12-long sequence giving the mean for
     each of the 12 months; *monthly_anom* is a 12-long sequence giving
