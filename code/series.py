@@ -19,7 +19,7 @@ def combine(composite, weight, new, new_weight, min_overlap):
     *new_weight*; *composite* has weights in the *weight* array.
 
     *new_weight* can be either a constant or an array of weights for
-     each datum in *new*.
+    each datum in *new*.
 
     For each of the 12 months of the year, track is kept of how many
     new data are combined.  This list of 12 elements is returned.
@@ -27,7 +27,7 @@ def combine(composite, weight, new, new_weight, min_overlap):
     Each month of the year is considered separately.  For the set of
     times where both *composite* and *new* have data the mean difference
     (a bias) is computed.  If there are fewer than *min_overlap* years
-    in common the data (for that month of the year) are not combined.
+    in common, the data (for that month of the year) are not combined.
     The bias is subtracted from the *new* record and it is point-wise
     combined into *composite* according to the weight *new_weight* and
     the existing weights for *composite*.
