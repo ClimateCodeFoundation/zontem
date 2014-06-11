@@ -118,8 +118,7 @@ class M:
             return int(s)
 
         # Fields are named after the designators used in the GHCN-M v3
-        # documentation except for:
-        # uid (GHCN: ID), lat (GHCN: latitude), lon (GHCN: longitude).
+        # documentation except for `uid` (GHCN: ID).
 
         # See ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/v3/README for format
         # of GHCN's metadata file.
