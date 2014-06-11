@@ -38,20 +38,9 @@ def combine(composite, weight, new, new_weight, min_overlap):
     # A count (of combined data) for each month.
     data_combined = [0] * 12
     for m in range(12):
-        sum_new = 0.0    # Sum of data in new
-        sum = 0.0        # Sum of data in composite
-        # Number of years where both new and composite are valid.
-        count = 0
-        for a,n in itertools.izip(composite[m::12],
-                                  new[m::12]):
-            if invalid(a) or invalid(n):
-                continue
-            count += 1
-            sum += a
-            sum_new += n
-        if count < min_overlap:
+        bias, overlap = bias_overlap(composite[m::12], new[m::12])
+        if overlap < min_overlap:
             continue
-        bias = (sum-sum_new)/count
 
         # Update period of valid data, composite and weights.
         for i in range(m, len(new), 12):
@@ -63,6 +52,32 @@ def combine(composite, weight, new, new_weight, min_overlap):
             weight[i] = new_month_weight
             data_combined[m] += 1
     return data_combined
+
+def bias_overlap(ps, qs):
+    """Compute the bias between series *ps* and *qs* (positive
+    when *ps* is on average bigger than *qs*).
+
+    Returns a (bias, overlap) pair where overlap is the number
+    of elements for which both *ps* and *qs* are valid.
+    """
+
+    # Sum of the data in each of *ps* and *qs*.
+    sum_p = 0.0
+    sum_q = 0.0
+    # Number of elements where both *ps* and *qs* are valid.
+    overlap = 0
+    for p,q in itertools.izip(ps, qs):
+        if invalid(p) or invalid(q):
+            continue
+        overlap += 1
+        sum_p += p
+        sum_q += q
+
+    if overlap == 0:
+        bias = None
+    else:
+        bias = (sum_p-sum_q)/overlap
+    return (bias, overlap)
 
 def ensure_array(exemplar, item):
     """Coerces *item* to be an array (linear sequence); if *item* is
