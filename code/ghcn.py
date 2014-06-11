@@ -78,7 +78,7 @@ class M:
             return l[:11]
 
         for id,lines in itertools.groupby(inp, id11):
-            d = dict(uid=id, first_year=min_year)
+            d = dict(id=id, first_year=min_year)
             if meta.get(id):
                 d.update(meta[id])
 
@@ -118,12 +118,12 @@ class M:
             return int(s)
 
         # Fields are named after the designators used in the GHCN-M v3
-        # documentation except for `uid` (GHCN: ID).
+        # documentation.
 
         # See ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/v3/README for format
         # of GHCN's metadata file.
         v3_ghcn_fields = dict(
-            uid       = (0,    11, str),
+            id        = (0,    11, str),
             latitude  = (12,   20, float),
             longitude = (21,   30, float),
             stelev    = (31,   37, float),
@@ -147,7 +147,7 @@ class M:
         for line in file:
             d = dict((field, convert(line[a:b]))
                       for field, (a,b,convert) in fields.items())
-            result[d['uid']] = d
+            result[d['id']] = d
 
         return result
 
