@@ -67,5 +67,4 @@ are GISTEMP, CRUTEM4, NOAA (this is not an exhaustive list).
 
  - inhomogeneity. Other analyses may have a step that adjusts
    or rejects inhomogeneous records. ZONTEM does not perform such
-   a step (but it is possible to use the adjusted version of
-   GHCN-M as input).
+   a step (but usually uses the adjusted version of GHCN-M as input).
