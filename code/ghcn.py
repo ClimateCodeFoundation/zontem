@@ -91,7 +91,11 @@ class M:
     def station_metadata(path=None, file=None, format='v3'):
         """
         Read a collection of station metadata from file, return
-        it as a dictionary of dictionaries.
+        it as a dictionary of dictionaries. The returned
+        dictionary is keyed by the 11-digit identifier (as a
+        string) to give the metadata for that particular
+        station.
+
         *format* specifies the format of the metadata; it can only be
         'v3' (for GHCN-M v3). It exists to provide compatibility
         with an alternate implementation of the same interface.
