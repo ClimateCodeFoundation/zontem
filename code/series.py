@@ -119,9 +119,9 @@ def monthly_anomalies(data, reference_period=None, base_year=-9999):
     the anomalized series for each of the 12 months.
 
     If *reference_period* is supplied then it should be a pair (*first*,
-    *last) and the mean for a month is taken over the period (an example
-    would be reference_period=(1951,1980)).  *base_year* specifies the
-    first year of the data.
+    *last*) and the mean for a month is taken over the period (an
+    example would be reference_period=(1951,1980)).  *base_year*
+    specifies the first year of the data.
     
     The input data is a flat sequence, one datum per month.
     Effectively the data changes shape as it passes through this
