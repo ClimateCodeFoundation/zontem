@@ -48,14 +48,14 @@ def combine(composite, weight, new, new_weight, min_overlap):
                 continue
             new_month_weight = weight[i] + new_weight[i]
             composite[i] = (weight[i]*composite[i]
-                          + new_weight[i]*(new[i]+bias))/new_month_weight
+                          + new_weight[i]*(new[i]-bias))/new_month_weight
             weight[i] = new_month_weight
             data_combined[m] += 1
     return data_combined
 
 def bias_overlap(ps, qs):
     """Compute the bias between series *ps* and *qs* (positive
-    when *ps* is on average bigger than *qs*).
+    when *qs* is on average bigger than *ps*).
 
     Returns a (bias, overlap) pair where overlap is the number
     of elements for which both *ps* and *qs* are valid.
@@ -76,7 +76,7 @@ def bias_overlap(ps, qs):
     if overlap == 0:
         bias = None
     else:
-        bias = (sum_p-sum_q)/overlap
+        bias = (sum_q-sum_p)/overlap
     return (bias, overlap)
 
 def ensure_array(exemplar, item):
