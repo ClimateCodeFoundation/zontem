@@ -149,6 +149,7 @@ def csv_save(out, series):
     import csv
 
     csvfile = csv.writer(out)
+    csvfile.writerow(["Year","Temperature Anomaly (K)"])
     for i, val in enumerate(series):
         if not valid(val):
             val=''
