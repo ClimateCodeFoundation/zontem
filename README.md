@@ -11,9 +11,36 @@ reasonable result.
 Running ZONTEM
 ==============
 
+You will need to be able to run Python from the command line. We
+require Python version 2.
+
 ```
-# somehow get GHCN-M V3 into the input/ directory and unpack it
-code/zontem.py
+python run-zontem.py
+```
+
+This downloads the GHCN-M dataset (of monthly average
+temperatures) as a compressed file, unpacks it, and runs the ZONTEM
+analysis.
+
+The result, a CSV file, is placed in the `output/` directory. It
+has a name based on the name of the input file used, which
+changes each month. Mine is called
+`Zontem-ghcnm.tavg.v3.2.2.20140611.qca.csv`.
+
+## Running ZONTEM again
+
+`run-zontem.py` will not download the compressed GHCN-M file
+again if it sees it in the `input/` directory. So if the file is
+there but broken (maybe due to an interrupted download), or you
+want a more recent version of GHCN-M (a new version is published
+roughly every month), then you should empty the `input/`
+directory first.
+
+The actual analysis is done by the program `code/zontem.py` and
+you can run that directly:
+
+```
+python code/zontem.py
 ```
 
 Method
