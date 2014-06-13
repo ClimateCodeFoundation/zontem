@@ -54,7 +54,9 @@ def run(**key):
     output_dir = os.path.join(parent_dir, 'output')
     csv_filename = os.path.join(output_dir, basename + '.csv')
 
-    csv_save(open(csv_filename, 'w'), global_annual_series)
+    with open(csv_filename, 'w') as csv_file:
+        csv_save(csv_file, global_annual_series)
+        sys.stdout.write(csv_filename + '\n')
 
 def zontem(input, n_zones):
     zones = split(input, n_zones)
