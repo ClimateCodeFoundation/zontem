@@ -20,6 +20,7 @@ from data import valid, MISSING
 import series
 
 parent_dir = os.path.join(os.path.dirname(__file__), '..')
+parent_dir = os.path.abspath(parent_dir)
 
 base_year = 1880
 combine_overlap = 20
@@ -34,7 +35,7 @@ def run(**key):
     if name == 'v3':
         input_dir = os.path.join(parent_dir, 'input')
         dat_glob = os.path.join(input_dir, 'ghcnm.v3.*/ghcnm*.dat')
-        v3dat = glob.glob(dat_glob)[0]
+        v3dat = sorted(glob.glob(dat_glob))[-1]
     else:
         v3dat = name
     input = ghcn.M.read(v3dat,
