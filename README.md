@@ -1,9 +1,9 @@
 ZONTEM
 ======
 
-ZONTEM is a method for computing the change in global temperature over
-the recent period (1880 CE to present) from published records of
-monthly mean temperatures (GHCN-M V3).
+ZONTEM (short for Zonal Temperatures) is a method for computing the
+change in global temperature over the recent period (1880 CE to present)
+from published records of monthly mean temperatures (GHCN-M V3).
 
 ZONTEM aims to be as simple as possible while still giving a
 reasonable result.
