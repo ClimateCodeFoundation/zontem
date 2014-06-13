@@ -81,7 +81,7 @@ def split(stations, N=20):
         # Fix Zone of hypothetical North Pole station.
         i = min(i, N-1)
         zone[i].append(station.series)
-        sys.stderr.write('\rZone %2d: %4d records' % (i, len(zone[i])))
+        sys.stderr.write('\rReading station data. Zone %2d: %4d records' % (i, len(zone[i])))
         sys.stderr.flush()
     sys.stderr.write('\n')
     return zone
