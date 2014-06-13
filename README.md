@@ -27,7 +27,7 @@ has a name based on the name of the input file used, which
 changes each month. Mine is called
 `Zontem-ghcnm.tavg.v3.2.2.20140611.qca.csv`.
 
-## Running ZONTEM again
+### Running ZONTEM again
 
 `run-zontem.py` will not download the compressed GHCN-M file
 again if it sees it in the `input/` directory. So if the file is
