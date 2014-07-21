@@ -43,7 +43,7 @@ def run(**key):
       MISSING=MISSING)
 
     N = int(key.get('zones', 20))
-    global_annual_series = zontem(input, N)
+    global_annual_series, zonal_annual_series = zontem(input, N)
 
     # Pick an output file name, which starts with
     # "Zontem" and is followed by the GHCN-M filename
@@ -56,15 +56,16 @@ def run(**key):
     csv_filename = os.path.join(output_dir, basename + '.csv')
 
     with open(csv_filename, 'w') as csv_file:
-        csv_save(csv_file, global_annual_series)
+        csv_save(csv_file, global_annual_series, zonal_annual_series)
         sys.stdout.write(csv_filename + '\n')
 
 def zontem(input, n_zones):
     zones = split(input, n_zones)
     zonal_average = map(combine_records, zones)
     global_average = combine_records(zonal_average)
-    annual_series = annual_anomaly(global_average)
-    return annual_series
+    global_annual_average = annual_anomaly(global_average)
+    zonal_annual_average = map(annual_anomaly, zonal_average)
+    return global_annual_average, zonal_annual_average
 
 def split(stations, N=20):
     """
@@ -144,21 +145,30 @@ def annual_anomaly(monthly):
             result.append(MISSING)
     return result
 
-def csv_save(out, series):
+def csv_save(out, global_series, zonal_series):
     """
-    Save an annual series, as a CSV file.
+    Save the global annual series and N zonal annual series,
+    as a CSV file.
     """
 
     import csv
 
     csvfile = csv.writer(out)
-    csvfile.writerow(["Year","Temperature Anomaly (K)"])
-    for i, val in enumerate(series):
-        if not valid(val):
-            val=''
-        else:
-            val = "{: 7.3f}".format(val)
-        csvfile.writerow([base_year + i, val])
+    header = ["Year", "Global Temperature Anomaly (K)"]
+    for i in range(len(zonal_series)):
+        header.append("Zone %d" % i)
+    csvfile.writerow(header)
+    for i, values in enumerate(zip(global_series, *zonal_series)):
+        row = [base_year + i]
+        # `values` has 1 value the global series, and one for each zone.
+        for v in values:
+            row.append(format1(v))
+        csvfile.writerow(row)
+
+def format1(val):
+    if not valid(val):
+        return ''
+    return "{: 7.3f}".format(val)
 
 
 def main(argv=None):
