@@ -61,10 +61,11 @@ def run(**key):
 
 def zontem(input, n_zones):
     zones = split(input, n_zones)
-    zonal_average = map(combine_records, zones)
-    global_average = combine_records(zonal_average)
-    global_annual_average = annual_anomaly(global_average)
-    zonal_annual_average = map(annual_anomaly, zonal_average)
+    zonal_average = map(combine_stations, zones)
+    global_average = combine_stations(zonal_average)
+    global_annual_average = annual_anomaly(global_average.series)
+    zonal_annual_average = [
+      annual_anomaly(zonal.series) for zonal in zonal_average]
     return global_annual_average, zonal_annual_average
 
 def split(stations, N=20):
@@ -84,15 +85,16 @@ def split(stations, N=20):
         i = int(math.floor((z+1.0)/2*N))
         # Fix Zone of hypothetical North Pole station.
         i = min(i, N-1)
-        zone[i].append(station.series)
+        zone[i].append(station)
         sys.stderr.write('\rReading station data. Zone %2d: %4d records' % (i, len(zone[i])))
         sys.stderr.flush()
     sys.stderr.write('\n')
     return zone
 
-def combine_records(records):
+def combine_stations(stations):
     """
-    Takes a list of records, and combine them into one record.
+    Takes a list of stations (each with a .series attribute), and
+    combine them into one new Station.
     """
 
     # Number of months in fixed length record.
@@ -100,31 +102,36 @@ def combine_records(records):
     # Make sure all the records are the same length, namely *M*.
     combined = [MISSING]*M
 
-    if len(records) == 0:
+    if len(stations) == 0:
         return combined
 
-    def good_months(record):
+    def good_months(station):
         count = 0
-        for v in record:
+        for v in station.series:
             if v != MISSING:
                 count += 1
         return count
 
-    records = iter(sorted(records, key=good_months, reverse=True))
+    stations = iter(sorted(stations, key=good_months, reverse=True))
 
-    first_series = records.next()
-    combined[:len(first_series)] = first_series
+    first_station = stations.next()
+    combined[:len(first_station.series)] = first_station.series
     combined_weight = [valid(v) for v in combined]
+    log("LONGEST %s %s" % (first_station.id, "1"*12))
 
-    for i,record in enumerate(records):
+    for i,station in enumerate(stations):
         new = [MISSING]*len(combined)
-        new[:len(record)] = record
-        series.combine(combined, combined_weight,
+        new[:len(station.series)] = station.series
+        months_combined = series.combine(combined, combined_weight,
             new, 1.0,
             combine_overlap)
         sys.stderr.write('\r%d' % i)
+        months_used = ''.join(
+          "01"[months_combined[i] > 0] for i in range(12))
+        log("COMBINE %s %s" % (station.id, months_used))
     sys.stderr.write('\n')
-    return combined
+    import ghcn
+    return ghcn.Station(series=combined, id="NEW")
 
 def annual_anomaly(monthly):
     """
@@ -170,6 +177,16 @@ def format1(val):
         return ''
     return "{: 7.3f}".format(val)
 
+log_file = None
+def log(message):
+    global log_file
+    if not log_file:
+        try:
+            os.mkdir("log")
+        except OSError:
+            pass
+        log_file = open(os.path.join("log", "zontem.log"), 'w')
+    log_file.write(message + '\n')
 
 def main(argv=None):
     import getopt
