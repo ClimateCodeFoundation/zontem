@@ -121,7 +121,7 @@ class M:
             Convert a field to an int, or if blank, convert to None.
             """
 
-            if s.isspace():
+            if not s or s.isspace():
                 return None
             return int(s)
 
