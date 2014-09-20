@@ -9,6 +9,10 @@
 # A simple computation of global average temperature anomaly via zonal
 # averages.
 
+"""
+zontem.py [--input ghcnm.dat] [--zones 20]
+"""
+
 import math
 import os
 import re
@@ -188,15 +192,20 @@ def log(message):
         log_file = open(os.path.join("log", "zontem.log"), 'w')
     log_file.write(message + '\n')
 
+def usage(out):
+    out.write(__doc__.strip() + '\n')
+
 def main(argv=None):
     import getopt
 
     if argv is None:
         argv = sys.argv
     opts,args = getopt.getopt(argv[1:], '',
-      ['input=', 'zones='])
+      ['help', 'input=', 'zones='])
     key = {}
     for opt,v in opts:
+        if opt == '--help':
+            return usage(sys.stdout)
         key[opt[2:]] = v
     run(**key)
 
