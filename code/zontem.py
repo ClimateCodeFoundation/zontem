@@ -200,8 +200,11 @@ def main(argv=None):
 
     if argv is None:
         argv = sys.argv
-    opts,args = getopt.getopt(argv[1:], '',
+    opts,arg = getopt.getopt(argv[1:], '',
       ['help', 'input=', 'zones='])
+    if arg:
+        usage(sys.stderr)
+        return 2
     key = {}
     for opt,v in opts:
         if opt == '--help':
